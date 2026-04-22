@@ -1,0 +1,296 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --primary: #011c39;
+    --primary-hover: #1e3a6e;
+    --accent: #2a5fd6;
+    --right-bg: #f8f9fa;
+    --main-text: #374151;
+    --muted: #6b7280;
+    --placeholder: #9ca3af;
+    --input-border: #d1d5db;
+    --light-border: #e5e7eb;
+    --focus-ring: rgba(42, 95, 214, 0.12);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+.left-panel {
+    flex: 1;
+    background-image: url('../images/buksu_bg.png');
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-color: var(--primary);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 48px;
+    z-index: 1;
+}
+
+.left-panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(1, 28, 57, 0.78);
+    z-index: 0;
+}
+
+.logo {
+    position: absolute;
+    top: 36px;
+    left: 40px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 1;
+}
+
+.logo img {
+    width: auto;
+    height: 50px;
+    object-fit: contain;
+    object-position: left center;
+    flex-shrink: 0;
+}
+
+.logo-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    line-height: 1;
+}
+
+.logo-text .title {
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+}
+
+.logo-text .subtitle {
+    font-size: 10px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+}
+
+.hero {
+    z-index: 1;
+    position: relative;
+}
+
+.hero h1 {
+    font-size: 36px;
+    font-weight: 600;
+    color: white;
+    line-height: 1.25;
+    margin: 0 0 16px 0;
+}
+
+.hero p {
+    font-size: 13px;
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.55);
+    line-height: 1.7;
+    max-width: 320px;
+    margin: 0;
+}
+
+.right-panel {
+    flex: 1;
+    background: var(--right-bg);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 48px;
+}
+
+.login-form {
+    max-width: 400px;
+    width: 100%;
+}
+
+.login-form h1 {
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--primary);
+    margin: 0 0 6px 0;
+}
+
+.login-form > p {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--muted);
+    margin: 0 0 28px 0;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.form-group input {
+    width: 100%;
+    height: 44px;
+    font-size: 14px;
+    font-weight: 400;
+    border: 1px solid var(--input-border);
+    border-radius: 8px;
+    padding: 0 14px;
+    box-sizing: border-box;
+}
+
+.form-group input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--focus-ring);
+    outline: none;
+}
+
+.form-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+}
+
+.remember-me input {
+    margin-right: 8px;
+}
+
+.remember-me label {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--main-text);
+}
+
+.forgot-password {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--accent);
+    text-decoration: none;
+}
+
+.forgot-password:hover {
+    text-decoration: underline;
+}
+
+.login-btn {
+    width: 100%;
+    height: 46px;
+    background: var(--primary);
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 16px;
+}
+
+.login-btn:hover {
+    background: var(--primary-hover);
+}
+
+.signup-link {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--muted);
+    margin: 0 0 20px 0;
+}
+
+.signup-link a {
+    color: var(--accent);
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.signup-link a:hover {
+    text-decoration: underline;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.divider hr {
+    flex: 1;
+    border: none;
+    height: 1px;
+    background: var(--light-border);
+}
+
+.divider span {
+    font-size: 13px;
+    color: var(--placeholder);
+    margin: 0 16px;
+}
+
+.google-btn {
+    width: 100%;
+    height: 44px;
+    background: white;
+    border: 1px solid var(--light-border);
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--main-text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.google-btn svg {
+    margin-right: 8px;
+}
+
+.google-btn:hover {
+    background: #f9fafb;
+    border-color: var(--input-border);
+}
+
+@media (max-width: 767px) {
+    .left-panel {
+        display: none;
+    }
+    .right-panel {
+        flex: 1;
+        width: 100%;
+    }
+}
