@@ -1,8 +1,9 @@
 <?php
 // login.php - Final Integrated Version
 require 'includes/db.php';
-session_start(); // Ensure session is started for user tracking
-
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 $message = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
