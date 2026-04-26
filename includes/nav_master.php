@@ -32,7 +32,7 @@
             <a href="/balikgamit/auth/logout.php" style="color: #e74c3c;">Logout</a>
         </div>
         <div class="nav-group">
-            <h4>Auth Logic</h4>
+            <h4>temporary</h4>
             <a href="/balikgamit/view-database-temporary.php">View database</a>
         </div>
     </nav>
