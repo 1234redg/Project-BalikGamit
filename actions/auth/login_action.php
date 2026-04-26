@@ -1,3 +1,47 @@
+<?php
+// login.php - Final Integrated Version
+require 'includes/db.php';
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+$message = "";
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $identifier = $_POST['identifier'];
+    $pass_input = $_POST['pass'];
+
+    // Querying the User_Table based on the provided project requirements
+    $sql = "SELECT * FROM User_Table WHERE Username = ? OR Email_Address = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "ss", $identifier, $identifier);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $user = mysqli_fetch_assoc($result);
+
+    if ($user && password_verify($pass_input, $user['Password'])) {
+        $_SESSION['user_id'] = $user['User_ID'];
+        $_SESSION['username'] = $user['Username'];
+
+        // Logic for "Remember Me" cookies
+        if (isset($_POST['remember'])) {
+            $token = bin2hex(random_bytes(16));
+            $token_hash = password_hash($token, PASSWORD_DEFAULT);
+            $expiry = date('Y-m-d H:i:s', time() + (86400 * 30));
+            $token_sql = "INSERT INTO User_Tokens (User_ID, Token_Hash, Expiry) VALUES (?, ?, ?)";
+            $t_stmt = mysqli_prepare($conn, $token_sql);
+            if ($t_stmt) {
+                mysqli_stmt_bind_param($t_stmt, "iss", $user['User_ID'], $token_hash, $expiry);
+                mysqli_stmt_execute($t_stmt);
+                setcookie('remember_me', $user['User_ID'] . ':' . $token, time() + (86400 * 30), "/", "", false, true);
+            }
+        }
+        header("Location: index.php");
+        exit();
+    } else {
+        $message = "<p style='color: #ff4d4d; font-weight: bold; margin-bottom: 15px;'>Invalid email/username or password.</p>";
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,32 +65,38 @@
                 <p>A centralized lost and found platform for Bukidnon State University — College of Technologies.</p>
             </div>
         </div>
+
         <div class="right-panel">
-            <form class="login-form" action="assets/index.php" method="post">
+            <form class="login-form" action="login.php" method="post">
                 <h1>Login to BalikGamit</h1>
                 <p>Please log in to your account to continue.</p>
+                
+                <?php echo $message; ?>
+
                 <div class="form-group">
-                    <label for="email">EMAIL / USERNAME</label>
-                    <input type="text" id="email" name="email" placeholder="Enter your email or username">
+                    <label for="identifier">EMAIL / USERNAME</label>
+                    <input type="text" id="identifier" name="identifier" placeholder="Enter your email or username" required>
                 </div>
                 <div class="form-group">
-                    <label for="password">PASSWORD</label>
-                    <input type="password" id="password" name="password" placeholder="Enter your password">
+                    <label for="pass">PASSWORD</label>
+                    <input type="password" id="pass" name="pass" placeholder="Enter your password" required>
                 </div>
                 <div class="form-row">
                     <div class="remember-me">
                         <input type="checkbox" id="remember" name="remember">
                         <label for="remember">Remember me</label>
                     </div>
-                    <a href="#" class="forgot-password">Forgot Password?</a>
+                    <a href="forgot-password.php" class="forgot-password">Forgot Password?</a>
                 </div>
                 <button type="submit" class="login-btn">Login</button>
-                <p class="signup-link">Don't have an Account? <a href="assets/signup.php">Sign up here</a></p>
+                <p class="signup-link">Don't have an Account? <a href="signup.php">Sign up here</a></p>
+                
                 <div class="divider">
                     <hr>
                     <span>or</span>
                     <hr>
                 </div>
+                
                 <button type="button" class="google-btn">
                     <svg width="18" height="18" viewBox="0 0 24 24">
                         <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
