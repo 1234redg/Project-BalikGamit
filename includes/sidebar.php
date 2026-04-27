@@ -64,8 +64,8 @@ $current_page = basename($_SERVER['PHP_SELF']);
     <ul>
         <li class="<?= ($current_page == 'index.php') ? 'active' : ''; ?>"><a href="index.php">Dashboard</a></li>
         <li class="<?= ($current_page == 'view-item.php') ? 'active' : ''; ?>"><a href="view-item.php">View an item</a></li>
-        <li class="<?= ($current_page == 'reported-items.php') ? 'active' : ''; ?>"><a href="reported-items.php">Reported Items</a></li>
-        <li class="<?= ($current_page == 'report-item.php') ? 'active' : ''; ?>"><a href="report-item.php">Report Item</a></li>
+        <li class="<?= ($current_page == 'reported.php') ? 'active' : ''; ?>"><a href="reported.php">Reported Items</a></li>
+        <li class="<?= ($current_page == 'report.php') ? 'active' : ''; ?>"><a href="report.php">Report Item</a></li>
         <li class="<?= ($current_page == 'my-reports.php') ? 'active' : ''; ?>"><a href="my-reports.php">My Reports</a></li>
         <li class="<?= ($current_page == 'history.php') ? 'active' : ''; ?>"><a href="history.php">History</a></li>
     </ul>

@@ -1,5 +1,5 @@
 <?php 
-require 'includes/db.php'; 
+require 'config/db.php'; 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }

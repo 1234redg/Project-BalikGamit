@@ -1,8 +1,8 @@
 <?php 
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
-require 'includes/db.php'; 
-include 'includes/nav_master.php'; 
+require '../../config/db.php'; 
+include '../../includes/nav_master.php'; 
 $message = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {

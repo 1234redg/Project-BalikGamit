@@ -1,6 +1,6 @@
 <?php
 // login.php - Final Integrated Version
-require 'includes/db.php';
+require_once '../../config/db.php';
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -48,13 +48,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - BalikGamit</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="../../assets/css/style.css">
 </head>
 <body>
     <div class="container">
         <div class="left-panel">
             <div class="logo">
-                <img src="images/BalikGamitLogo1.png" alt="BalikGamit Logo" width="40" height="40">
+                <img src="../../assets/images/BalikGamitLogo1.png" alt="BalikGamit Logo" width="40" height="40">
                 <div class="logo-text">
                     <div class="title">BalikGamit</div>
                     <div class="subtitle">BY ASYNC V.1.0</div>
@@ -67,7 +67,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
 
         <div class="right-panel">
-            <form class="login-form" action="login.php" method="post">
+            <form class="login-form" action="../../student/dashboard.php" method="post">
                 <h1>Login to BalikGamit</h1>
                 <p>Please log in to your account to continue.</p>
                 
@@ -89,7 +89,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <a href="forgot-password.php" class="forgot-password">Forgot Password?</a>
                 </div>
                 <button type="submit" class="login-btn">Login</button>
-                <p class="signup-link">Don't have an Account? <a href="signup.php">Sign up here</a></p>
+                <p class="signup-link">Don't have an Account? <a href="register_action.php">Sign up here</a></p>
                 
                 <div class="divider">
                     <hr>
