@@ -1,6 +1,6 @@
 <?php
 session_start();
 session_destroy();
-header("Location: /balikgamit/login.php");
+header("Location: /balikgamit/actions/auth/login_action.php");
 exit();
 ?>

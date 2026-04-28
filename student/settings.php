@@ -1,5 +1,5 @@
 <?php 
-require 'includes/db.php'; 
+require '../config/db.php'; 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -47,10 +47,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 <body style="margin: 0; padding: 0; background-color: #0a0a0a; color: white;">
     <div class="app-container">
-        <?php include_once 'includes/sidebar.php'; ?>
+        <?php include_once '../includes/sidebar.php'; ?>
         
         <div class="main-content" style="display: flex; flex-direction: column;">
-            <?php include 'includes/nav_master.php'; ?>
+            <?php include '../includes/nav_master.php'; ?>
 
             <div class="content-body" style="padding-top: 20px;">
                 <h2>Account Settings</h2>

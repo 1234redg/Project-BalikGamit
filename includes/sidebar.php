@@ -62,7 +62,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
     <p class="menu-label">MAIN</p>
     <ul>
-        <li class="<?= ($current_page == 'index.php') ? 'active' : ''; ?>"><a href="index.php">Dashboard</a></li>
+        <li class="<?= ($current_page == 'index.php') ? 'active' : ''; ?>"><a href="/Balikgamit/student/dashboard.php">Dashboard</a></li>
         <li class="<?= ($current_page == 'view-item.php') ? 'active' : ''; ?>"><a href="view-item.php">View an item</a></li>
         <li class="<?= ($current_page == 'reported.php') ? 'active' : ''; ?>"><a href="reported.php">Reported Items</a></li>
         <li class="<?= ($current_page == 'report.php') ? 'active' : ''; ?>"><a href="report.php">Report Item</a></li>
@@ -73,6 +73,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
     <p class="menu-label">ACCOUNT</p>
     <ul>
         <li class="<?= ($current_page == 'settings.php') ? 'active' : ''; ?>"><a href="settings.php">Settings</a></li>
-        <li><a href="auth/logout.php">Logout</a></li>
+        <li><a href="../logout.php">Logout</a></li>
     </ul>
 </div>

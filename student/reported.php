@@ -5,16 +5,13 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// 1. CAPTURE FILTER/SORT/SEARCH PARAMETERS
-$search_query   = $_GET['search'] ?? '';          // Text search
-$filter_status  = $_GET['status'] ?? '';          // 'Found' or 'Lost'
-$filter_cat     = $_GET['category'] ?? '';        // Specific Category Name
-$date_prio      = $_GET['date_order'] ?? 'DESC';  // 'ASC' or 'DESC'
+$search_query   = $_GET['search'] ?? '';
+$filter_status  = $_GET['status'] ?? '';
+$filter_cat     = $_GET['category'] ?? '';
+$date_prio      = $_GET['date_order'] ?? 'DESC';
 
-// 2. BUILD THE WHERE CLAUSE
 $where_clauses = [];
 
-// Search Logic (Weakpoint note: this only checks Item_Name)
 if (!empty($search_query)) {
     $escaped_search = mysqli_real_escape_string($conn, $search_query);
     $where_clauses[] = "i.Item_Name LIKE '%$escaped_search%'";
@@ -33,11 +30,9 @@ if (count($where_clauses) > 0) {
     $where_sql = " WHERE " . implode(' AND ', $where_clauses);
 }
 
-// 3. BUILD THE ORDER BY CLAUSE
 $date_dir = ($date_prio === 'ASC') ? 'ASC' : 'DESC';
 $order_sql = " ORDER BY p.Date_Filed $date_dir";
 
-// 4. MAIN QUERY
 $query = "SELECT 
             p.Publication_ID, 
             i.Item_Name, 
@@ -117,7 +112,7 @@ $result = mysqli_query($conn, $query);
                         </select>
 
                         <button type="submit">Search</button>
-                        <a href="reported-items.php" style="color: #666; font-size: 13px; text-decoration: none; margin-left: 10px;">Reset</a>
+                        <a href="reported.php" style="color: #666; font-size: 13px; text-decoration: none; margin-left: 10px;">Reset</a>
                     </form>
                 </div>
 
@@ -125,8 +120,13 @@ $result = mysqli_query($conn, $query);
                     <?php if (mysqli_num_rows($result) > 0): ?>
                         <?php while ($row = mysqli_fetch_assoc($result)): ?>
                             <div class="item-card">
-                                <?php if (!empty($row['Item_Image'])): ?>
-                                    <img src="<?= htmlspecialchars($row['Item_Image']); ?>" class="item-image" alt="Item Photo">
+                                <?php 
+                                    // Since database stores "uploads/filename.jpg", we just need to go up one level
+                                    $db_image_path = $row['Item_Image'];
+                                    $final_src = !empty($db_image_path) ? "../" . $db_image_path : "";
+                                ?>
+                                <?php if (!empty($db_image_path) && file_exists(__DIR__ . "/../" . $db_image_path)): ?>
+                                    <img src="<?= htmlspecialchars($final_src); ?>" class="item-image" alt="Item Photo">
                                 <?php else: ?>
                                     <div class="item-image" style="display: flex; align-items: center; justify-content: center; color: #444;">No Image Available</div>
                                 <?php endif; ?>

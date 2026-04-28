@@ -24,7 +24,7 @@
 
         <div class="nav-group">
             <h4>Auth Logic</h4>
-            <a href="/balikgamit/login.php">Login Page</a>
+            <a href="/balikgamit/actions/auth/login_action.php">Login Page</a>
             <a href="/balikgamit/signup.php">Register Page</a>
             <a href="/balikgamit/auth/forgot-password.php">Forgot Password</a>
             <a href="/balikgamit/auth/change-password.php">Change Password</a>
