@@ -73,7 +73,7 @@ if (isset($_SESSION['user_id'])) {
         <div class="nav-group">
             <h4>Auth Logic</h4>
             <a href="/balikgamit/actions/auth/login_action.php">Login Page</a>
-            <a href="/balikgamit/signup.php">Register Page</a>
+            <a href="/balikgamit/actions/auth/register_action.php">Register Page</a>
             <a href="/balikgamit/auth/forgot-password.php">Forgot Password</a>
             <a href="/balikgamit/auth/change-password.php">Change Password</a>
             <a href="/balikgamit/auth/verify-email.php">Verify Email</a>

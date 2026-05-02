@@ -45,10 +45,10 @@ $query = "SELECT
             u.Username AS Reporter,
             s.Claim_Status
           FROM publication_table p
-          JOIN item_table i ON p.Item_ID = i.Item_ID
-          LEFT JOIN category_table c ON i.Category_ID = c.Category_ID
-          JOIN user_table u ON p.User_ID = u.User_ID
-          LEFT JOIN status_table s ON p.Claim_Status_ID = s.Claim_Status_ID" 
+          INNER JOIN item_table i ON p.Item_ID = i.Item_ID
+          INNER JOIN category_table c ON i.Category_ID = c.Category_ID
+          INNER JOIN user_table u ON p.User_ID = u.User_ID
+          INNER JOIN status_table s ON p.Claim_Status_ID = s.Claim_Status_ID" 
           . $where_sql 
           . $order_sql;
 
@@ -64,7 +64,7 @@ $result = mysqli_query($conn, $query);
         .item-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-top: 20px; }
         .item-card { background: #1a1a1a; border: 1px solid #333; border-radius: 8px; overflow: hidden; transition: transform 0.2s; }
         .item-card:hover { transform: translateY(-5px); }
-        .item-image { width: 100%; height: 200px; object-fit: cover; background: #252525; border-bottom: 1px solid #333; }
+        .item-image { width: 100%; height: 200px; object-fit: cover; background: #252525; }
         .item-info { padding: 15px; }
         .status-badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; }
         .status-found { background: #28a745; color: white; }
@@ -122,13 +122,10 @@ $result = mysqli_query($conn, $query);
                             <div class="item-card">
                                 <?php 
                                     $db_image_path = $row['Item_Image'];
-                                    $image_src = !empty($db_image_path) ? "../" . $db_image_path : "";
+                                    $final_src = !empty($db_image_path) ? "../" . $db_image_path : "";
                                 ?>
-                                <?php if (!empty($db_image_path)): ?>
-                                    <img src="<?= htmlspecialchars($image_src); ?>" 
-                                         class="item-image" 
-                                         alt="Item Photo"
-                                         onerror="this.src='https://via.placeholder.com/300x200?text=No+Image+Found';">
+                                <?php if (!empty($db_image_path) && file_exists(__DIR__ . "/../" . $db_image_path)): ?>
+                                    <img src="<?= htmlspecialchars($final_src); ?>" class="item-image" alt="Item Photo">
                                 <?php else: ?>
                                     <div class="item-image" style="display: flex; align-items: center; justify-content: center; color: #444;">No Image Available</div>
                                 <?php endif; ?>
@@ -138,7 +135,7 @@ $result = mysqli_query($conn, $query);
                                         <?= htmlspecialchars($row['Item_Status']); ?>
                                     </span>
                                     <h3 style="margin: 5px 0;"><?= htmlspecialchars($row['Item_Name']); ?></h3>
-                                    <p style="font-size: 13px; color: #3498db; margin-bottom: 10px;"><?= htmlspecialchars($row['Category'] ?? 'Uncategorized'); ?></p>
+                                    <p style="font-size: 13px; color: #007bff; margin-bottom: 10px;"><?= htmlspecialchars($row['Category']); ?></p>
                                     
                                     <div style="font-size: 13px; color: #888;">
                                         <p style="margin: 5px 0;">📍 <?= htmlspecialchars($row['Location']); ?></p>
@@ -147,16 +144,13 @@ $result = mysqli_query($conn, $query);
                                     </div>
 
                                     <div class="claim-status">
-                                        Status: <strong><?= ucfirst(htmlspecialchars($row['Claim_Status'] ?? 'pending')); ?></strong>
+                                        Status: <strong><?= ucfirst(htmlspecialchars($row['Claim_Status'])); ?></strong>
                                     </div>
                                 </div>
                             </div>
                         <?php endwhile; ?>
                     <?php else: ?>
-                        <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #888;">
-                            <p style="font-size: 18px;">No reported items found matching your criteria.</p>
-                            <p style="font-size: 14px;">Try adjusting your filters or search terms.</p>
-                        </div>
+                        <p style="color: #888; font-style: italic;">No results found.</p>
                     <?php endif; ?>
                 </div>
             </div>
