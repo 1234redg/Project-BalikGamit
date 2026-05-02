@@ -33,11 +33,15 @@ if ($error == "invalid") {
             </div>
             <div class="hero">
                 <h1>Reuniting lost items with their owners.</h1>
-                <p>A centralized lost and found platform for Bukidnon State University.</p>
+                <p>A centralized lost and found platform for Bukidnon State University. 
+                Submit reports, track item status, and claim your belongings 
+                seamlessly through our digital system.</p>
             </div>
         </div>
 
         <div class="right-panel">
+
+<!--------------------------------------------------------------------------------------------------------------------------------------->
             <!-- ACTION points to login_action.php -->
             <form class="login-form" action="actions/auth/login_action.php" method="post">
                 <h1>Login to BalikGamit</h1>
@@ -61,7 +65,7 @@ if ($error == "invalid") {
                     <a href="forgot-password.php" class="forgot-password">Forgot Password?</a>
                 </div>
                 <button type="submit" class="login-btn">Login</button>
-                <p class="signup-link">Don't have an Account? <a href="register.php">Sign up here</a></p>
+                <p class="signup-link">Don't have an Account? <a href="signup.php">Sign up here</a></p>
             </form>
         </div>
     </div>
