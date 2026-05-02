@@ -39,12 +39,14 @@ body {
     position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
-    padding: 48px;
+    padding-top: 63px;
+    padding-left: 48px;
+    padding-right: 48px;
     z-index: 1;
 }
 
 .left-panel::before {
+    justify-content: flex-start;
     content: '';
     position: absolute;
     top: 0;
@@ -57,10 +59,9 @@ body {
 
 .logo {
     position: absolute;
-    top: 36px;
-    left: 40px;
+    padding: 48px;
     display: flex;
-    align-items: center;
+    align-items: left;
     gap: 10px;
     z-index: 1;
 }
@@ -74,6 +75,7 @@ body {
 }
 
 .logo-text {
+    margin-top: 10px;
     display: flex;
     flex-direction: column;
     gap: 2px;
@@ -97,10 +99,12 @@ body {
 .hero {
     z-index: 1;
     position: relative;
+    padding-left: 48px;
+    padding-top: 130px;
 }
 
 .hero h1 {
-    font-size: 36px;
+    font-size: 38px;
     font-weight: 600;
     color: white;
     line-height: 1.25;

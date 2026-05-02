@@ -38,6 +38,8 @@ if ($error == "invalid") {
         </div>
 
         <div class="right-panel">
+
+<!--------------------------------------------------------------------------------------------------------------------------------------->
             <!-- ACTION points to login_action.php -->
             <form class="login-form" action="actions/auth/login_action.php" method="post">
                 <h1>Login to BalikGamit</h1>

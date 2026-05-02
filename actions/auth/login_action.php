@@ -16,12 +16,12 @@ if (session_status() === PHP_SESSION_NONE) {
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     // Sanitize input to prevent basic injection (though using prepared statements below)
-    $identifier = mysqli_real_escape_string($conn, $_POST['identifier']);
-    $pass_input = $_POST['pass'];
+    $identifier = trim($_POST['identifier']);
+    $pass_input = trim($_POST['pass']);
 
     // Validate that fields are not empty
     if (empty($identifier) || empty($pass_input)) {
-        header("Location: ../../Login.php?error=empty");
+        header("Location: ../../login.php?error=empty");
         exit();
     }
 
@@ -66,18 +66,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         } else {
             // Invalid credentials: Send back to Login with error flag[cite: 1]
-            header("Location: ../../Login.php?error=invalid");
+            header("Location: ../../login.php?error=invalid");
             exit();
         }
     } else {
         // Database/Statement failure
-        header("Location: ../../Login.php?error=system");
+        header("Location: ../../login.php?error=system");
         exit();
     }
 
 } else {
     // If someone tries to access this file directly via URL without POST
-    header("Location: ../../Login.php");
+    header("Location: ../../login.php");
     exit();
 }
 ?>
