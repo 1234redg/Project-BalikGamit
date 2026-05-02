@@ -33,7 +33,7 @@
         </div>
         <div class="nav-group">
             <h4>temporary</h4>
-            <a href="/balikgamit/view-database-temporary.php">View database</a>
+            <a href="/balikgamit/includes/view-database-temporary.php">View database</a>
         </div>
     </nav>
     <div class="container">
