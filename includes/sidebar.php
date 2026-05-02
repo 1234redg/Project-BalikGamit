@@ -4,10 +4,17 @@ $current_page = basename($_SERVER['PHP_SELF']);
 <style>
     :root {
         --sidebar-width: 260px;
-        --sidebar-bg: #001529;
-        /* Dark blue from your screenshot */
-        --main-bg: #0a0a0a;
-        /* Deep black for content area */
+        --sidebar-bg: #001529; /* Dark blue from your screenshot */
+        --main-bg: #0a0a0a;    /* Deep black for content area */
+    }
+
+    /* GLOBAL FONT & RESET */
+    html, body {
+        margin: 0;
+        padding: 0;
+        background-color: var(--main-bg);
+        color: white;
+        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     }
 
     /* This wrapper must be in your main files (index.php, report-item.php, etc.) */
@@ -24,18 +31,15 @@ $current_page = basename($_SERVER['PHP_SELF']);
         color: white;
         padding: 30px 20px;
         flex-shrink: 0;
-        /* Prevents sidebar from squishing */
         border-right: 1px solid #1f1f1f;
     }
 
     .main-content {
         flex-grow: 1;
-        /* Takes up all remaining space */
         background-color: var(--main-bg);
         color: white;
         padding: 40px;
         min-width: 0;
-        /* Fixes potential flexbox overflow issues */
     }
 
     /* Sidebar Styling */
