@@ -29,7 +29,6 @@ if (isset($_SESSION['msg'])) {
         <?php include_once '../includes/sidebar.php'; ?>
         
         <div class="main-content" style="flex: 1; display: flex; flex-direction: column;">
-            <?php include '../includes/nav_master.php'; ?>
 
             <div class="content-body" style="padding: 20px;">
                 <?php if (!isset($_SESSION['user_id'])): ?>

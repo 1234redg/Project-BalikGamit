@@ -73,7 +73,6 @@ $result = mysqli_query($conn, $query);
         <?php include_once '../includes/sidebar.php'; ?>
 
         <div class="main-content">
-            <?php include '../includes/nav_master.php'; ?>
 
             <h2 style="margin-top: 20px;">Reported Items</h2>
 

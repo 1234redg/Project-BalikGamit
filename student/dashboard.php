@@ -16,8 +16,6 @@ if (session_status() === PHP_SESSION_NONE) {
         <?php include_once '../includes/sidebar.php'; ?>
         
         <div class="main-content" style="display: flex; flex-direction: column;">
-            <?php include '../includes/nav_master.php'; ?>
-
             <div class="content-body" style="padding-top: 20px;">
                 <h1>Welcome to BalikGamit</h1>
                 <p style="color: #888;">Select an option from the sidebar to manage lost and found items.</p>

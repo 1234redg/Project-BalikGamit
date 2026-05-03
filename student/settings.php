@@ -50,7 +50,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <?php include_once '../includes/sidebar.php'; ?>
         
         <div class="main-content" style="display: flex; flex-direction: column;">
-            <?php include '../includes/nav_master.php'; ?>
 
             <div class="content-body" style="padding-top: 20px;">
                 <h2>Account Settings</h2>

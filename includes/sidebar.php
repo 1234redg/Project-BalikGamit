@@ -1,14 +1,35 @@
 <?php
+// sidebar.php
 $current_page = basename($_SERVER['PHP_SELF']);
+
+// Logic from nav_master to fetch the user's first name[cite: 2]
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+$firstName = "Guest";
+
+// Ensure $conn is available from your db.php or config.php
+if (isset($_SESSION['user_id']) && isset($conn)) {
+    $u_id = $_SESSION['user_id'];
+    $query = "SELECT First_Name FROM user_table WHERE User_ID = ?";
+    $stmt = mysqli_prepare($conn, $query);
+    mysqli_stmt_bind_param($stmt, "i", $u_id);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    if ($user = mysqli_fetch_assoc($res)) {
+        $firstName = htmlspecialchars($user['First_Name']);
+    }
+}
 ?>
 <style>
     :root {
         --sidebar-width: 260px;
-        --sidebar-bg: #001529; /* Dark blue from your screenshot */
-        --main-bg: #0a0a0a;    /* Deep black for content area */
+        --sidebar-bg: #001529; /* Dark blue from your screenshot[cite: 1] */
+        --main-bg: #0a0a0a;    /* Deep black for content area[cite: 1] */
     }
 
-    /* GLOBAL FONT & RESET */
+    /* GLOBAL FONT & RESET[cite: 1] */
     html, body {
         margin: 0;
         padding: 0;
@@ -17,7 +38,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
         font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     }
 
-    /* This wrapper must be in your main files (index.php, report-item.php, etc.) */
     .app-container {
         display: flex;
         min-height: 100vh;
@@ -34,15 +54,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
         border-right: 1px solid #1f1f1f;
     }
 
-    .main-content {
-        flex-grow: 1;
-        background-color: var(--main-bg);
-        color: white;
-        padding: 40px;
-        min-width: 0;
-    }
-
-    /* Sidebar Styling */
+    /* Sidebar Styling[cite: 1] */
     .sidebar h2 {
         margin: 0;
         font-size: 22px;
@@ -60,6 +72,30 @@ $current_page = basename($_SERVER['PHP_SELF']);
         font-size: 12px;
         margin: 25px 0 10px 0;
         font-weight: bold;
+    }
+
+    /* Logged-in User Display Style */
+    .logged-in-user {
+        background-color: rgba(255, 255, 255, 0.05);
+        padding: 12px;
+        border-radius: 6px;
+        margin-bottom: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .logged-in-user span {
+        display: block;
+        font-size: 10px;
+        color: #888;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .logged-in-user strong {
+        display: block;
+        font-size: 14px;
+        color: #3498db; /* Consistent with nav_master highlight color[cite: 2] */
+        margin-top: 2px;
     }
 
     .sidebar ul {
@@ -99,7 +135,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
     <p class="menu-label">MAIN</p>
     <ul>
-        <li class="<?= ($current_page == 'index.php') ? 'active' : ''; ?>"><a
+        <li class="<?= ($current_page == 'index.php' || $current_page == 'dashboard.php') ? 'active' : ''; ?>"><a
                 href="/Balikgamit/student/dashboard.php">Dashboard</a></li>
         <li class="<?= ($current_page == 'view-item.php') ? 'active' : ''; ?>"><a href="view-item.php">View an item</a>
         </li>
@@ -112,6 +148,13 @@ $current_page = basename($_SERVER['PHP_SELF']);
     </ul>
 
     <p class="menu-label">ACCOUNT</p>
+    
+    <!-- User Display added here -->
+    <div class="logged-in-user">
+        <span>Logged in as</span>
+        <strong><?php echo $firstName; ?></strong>
+    </div>
+
     <ul>
         <li class="<?= ($current_page == 'settings.php') ? 'active' : ''; ?>"><a href="settings.php">Settings</a></li>
         <li>
