@@ -45,7 +45,7 @@ if (isset($_SESSION['user_id']) && isset($conn)) {
                 Report Item
             </a>
         </li>
-<<<<<<< HEAD
+
         <li class="<?= ($current_page == 'report.php') ? 'active' : ''; ?>"><a href="report.php">Report Item</a></li>
         <li class="<?= ($current_page == 'my-reports.php') ? 'active' : ''; ?>"><a href="my-reports.php">My Reports</a>
         </li>
@@ -65,12 +65,12 @@ if (isset($_SESSION['user_id']) && isset($conn)) {
         <li>
             <a href="#" onclick="openLogoutModal(); return false;">
                 Logout
-=======
+
         <li class="<?= $current_page === 'my_reports.php' ? 'active' : '' ?>">
             <a href="my_reports.php">
                 <i class="fa-solid fa-file-lines sidebar-icon"></i>
                 My Reports
->>>>>>> 9d6fa3580ad657b9ecbbf8b63d56fb88af120e0b
+
             </a>
         </li>
     </ul>
