@@ -1,0 +1,150 @@
+<?php
+require '../config/db.php';
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+if (!isset($_SESSION['user_id'])) {
+    header("Location: ../login.php");
+    exit();
+}
+
+$user_id = $_SESSION['user_id'];
+$search  = isset($_GET['search']) ? trim($_GET['search']) : '';
+
+// Fetch user display name
+$user_stmt = mysqli_prepare($conn, "SELECT First_Name, Last_Name FROM user_table WHERE User_ID = ?");
+mysqli_stmt_bind_param($user_stmt, "i", $user_id);
+mysqli_stmt_execute($user_stmt);
+$user_data   = mysqli_fetch_assoc(mysqli_stmt_get_result($user_stmt));
+$displayName = trim(($user_data['First_Name'] ?? '') . ' ' . ($user_data['Last_Name'] ?? ''));
+if (empty($displayName)) $displayName = 'Guest';
+
+// Build query based on your table structure[cite: 1, 4]
+$where  = "WHERE c.User_ID = ?";
+$params = [$user_id];
+$types  = 'i';
+
+if ($search !== '') {
+    $where   .= " AND i.Item_Name LIKE ?";
+    $params[] = "%$search%";
+    $types   .= 's';
+}
+
+// JOIN logic: claims_table -> reports_table -> item_table[cite: 1, 4]
+$sql = "SELECT c.Claim_Request_ID, c.Claim_Status, c.Claim_Note,
+               i.Item_Name, i.Item_Image, i.Item_Status as Original_Status,
+               cat.Category,
+               r.Date_filed
+        FROM claims_table c
+        JOIN reports_table r ON c.Report_ID = r.Report_ID
+        JOIN item_table i ON r.Item_ID = i.Item_ID
+        LEFT JOIN category_table cat ON i.Category_ID = cat.Category_ID
+        $where
+        ORDER BY r.Date_filed DESC";
+
+$stmt = mysqli_prepare($conn, $sql);
+mysqli_stmt_bind_param($stmt, $types, ...$params);
+mysqli_stmt_execute($stmt);
+$claims = mysqli_fetch_all(mysqli_stmt_get_result($stmt), MYSQLI_ASSOC);
+$total  = count($claims);
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Claims - BalikGamit</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+<div class="app-container">
+    <?php include_once '../includes/sidebar.php'; ?>
+
+    <div class="main-content">
+        <!-- Header -->
+        <div class="dashboard-header">
+            <div class="dashboard-header-left">
+                <span class="dashboard-section-label">Your Activity</span>
+                <h1>My Claims</h1>
+                <p>Track the status of items you have claimed.</p>
+            </div>
+            <div class="dashboard-user-card">
+                <div class="user-avatar-circle"><?= strtoupper(substr($displayName, 0, 1)) ?></div>
+                <div class="user-card-info">
+                    <span class="user-card-name"><?= htmlspecialchars($displayName) ?></span>
+                    <span class="user-card-status">● Online</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search -->
+        <form method="GET" action="" class="dashboard-controls">
+            <div class="search-panel" style="flex: 1;">
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" name="search" 
+                           placeholder="Search your claims..." 
+                           value="<?= htmlspecialchars($search) ?>">
+                </div>
+            </div>
+            <button type="submit" class="status-btn active">Search</button>
+        </form>
+
+        <!-- Claims Grid -->
+        <?php if ($total === 0): ?>
+            <div class="dashboard-empty">
+                <i class="fa-solid fa-file-circle-question"></i>
+                <p>You haven't made any claims yet.</p>
+            </div>
+        <?php else: ?>
+            <div class="cards-grid">
+                <?php foreach ($claims as $row): 
+                    $statusClass = 'status-' . strtolower($row['Claim_Status']);
+                    
+                    // FIXED IMAGE PATH LOGIC[cite: 3]
+                    $imgPath = !empty($row['Item_Image']) 
+                        ? '../' . htmlspecialchars($row['Item_Image']) 
+                        : '../assets/images/placeholder.png';
+                ?>
+                <div class="item-card">
+                    <div class="item-image">
+                        <img src="<?= $imgPath ?>" 
+                             alt="<?= htmlspecialchars($row['Item_Name']) ?>"
+                             style="width:100%; height:100%; object-fit:cover;"
+                             onerror="this.src='../assets/images/placeholder.png'">
+                    </div>
+                    <div class="item-card-header">
+                        <span class="item-status <?= $statusClass ?>">
+                            <?= htmlspecialchars(ucfirst($row['Claim_Status'])) ?>
+                        </span>
+                        <span class="item-category"><?= htmlspecialchars($row['Category'] ?? 'Uncategorized') ?></span>
+                    </div>
+                    <div class="item-card-body">
+                        <h3 class="item-title"><?= htmlspecialchars($row['Item_Name']) ?></h3>
+                        <?php if(!empty($row['Claim_Note'])): ?>
+                            <p class="item-meta" style="font-style: italic; color: #666;">
+                                "<?= htmlspecialchars($row['Claim_Note']) ?>"
+                            </p>
+                        <?php endif; ?>
+                    </div>
+                    <div class="item-card-footer">
+                        <span class="item-date">
+                            <i class="fa-regular fa-calendar"></i> Reported: <?= date('M d', strtotime($row['Date_filed'])) ?>
+                        </span>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+
+        <!-- Footer -->
+        <div class="dashboard-footer">
+            <span>© 2026 BalikGamit — Async V.1.0</span>
+        </div>
+    </div>
+</div>
+</body>
+</html>
