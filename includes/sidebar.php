@@ -137,8 +137,6 @@ if (isset($_SESSION['user_id']) && isset($conn)) {
     <ul>
         <li class="<?= ($current_page == 'index.php' || $current_page == 'dashboard.php') ? 'active' : ''; ?>"><a
                 href="/Balikgamit/student/dashboard.php">Dashboard</a></li>
-        <li class="<?= ($current_page == 'view-item.php') ? 'active' : ''; ?>"><a href="view-item.php">View an item</a>
-        </li>
         <li class="<?= ($current_page == 'reported.php') ? 'active' : ''; ?>"><a href="reported.php">Reported Items</a>
         </li>
         <li class="<?= ($current_page == 'report.php') ? 'active' : ''; ?>"><a href="report.php">Report Item</a></li>
