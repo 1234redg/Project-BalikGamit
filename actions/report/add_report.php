@@ -15,7 +15,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     try {
         $image_path = null;
         if (isset($_FILES['item_photo']) && $_FILES['item_photo']['error'] == 0) {
-            // Note: Adjusting path to point to the correct uploads folder relative to this file
             $target_dir = "../../uploads/";
             if (!is_dir($target_dir)) { 
                 mkdir($target_dir, 0777, true); 
@@ -24,41 +23,42 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $target_file = $target_dir . $filename;
             
             if (move_uploaded_file($_FILES["item_photo"]["tmp_name"], $target_file)) {
-                // Save the path relative to the root for database consistency
                 $image_path = "uploads/" . $filename;
             }
         }
 
-        // 1. Insert into item_table[cite: 1]
+        // 1. Insert into item_table
         $item_sql = "INSERT INTO item_table (Item_Name, Item_Status, Item_Description, Category_ID, Item_Image) VALUES (?, ?, ?, ?, ?)";
         $item_stmt = mysqli_prepare($conn, $item_sql);
         mysqli_stmt_bind_param($item_stmt, "sssis", $_POST['name'], $_POST['status'], $_POST['desc'], $_POST['cat_id'], $image_path);
         mysqli_stmt_execute($item_stmt);
         $new_item_id = mysqli_insert_id($conn);
 
-        // 2. Insert into publication_table[cite: 1]
-        $pub_sql = "INSERT INTO publication_table (User_ID, Item_ID, Date_Filed, Location, Claim_Status_ID) VALUES (?, ?, ?, ?, ?)";
-        $pub_stmt = mysqli_prepare($conn, $pub_sql);
-        $status_id = 1; // Default to 'pending'[cite: 1]
-        mysqli_stmt_bind_param($pub_stmt, "iissi", $_SESSION['user_id'], $new_item_id, $_POST['date'], $_POST['loc'], $status_id);
-        mysqli_stmt_execute($pub_stmt);
+        // 2. Insert into reports_table (Updated to match your actual columns)
+        // Fixed: Removed Claim_Status_ID and used 'Date_filed' to match database screenshot
+        $report_sql = "INSERT INTO reports_table (User_ID, Item_ID, Date_filed, Location) VALUES (?, ?, ?, ?)";
+        $report_stmt = mysqli_prepare($conn, $report_sql);
+        
+        // Corrected bind_param: 4 placeholders (?, ?, ?, ?) = "iiss"
+        mysqli_stmt_bind_param($report_stmt, "iiss", $_SESSION['user_id'], $new_item_id, $_POST['date'], $_POST['loc']);
+        mysqli_stmt_execute($report_stmt);
 
         mysqli_commit($conn);
         
-        // Redirect back with success message
+        // Redirect back with success message[cite: 2]
         $_SESSION['msg'] = "success";
-        header("Location: ../../student/report.php"); // Adjust this to your actual form page name
+        header("Location: ../../student/report_item.php"); 
         exit();
 
     } catch (Exception $e) {
         mysqli_rollback($conn);
         $_SESSION['msg'] = "error";
         $_SESSION['error_details'] = $e->getMessage();
-        header("Location: ../../student/dashboard.php");
+        header("Location: ../../student/report_item.php");
         exit();
     }
 } else {
-    header("Location: ../../student/dashboard.php");
+    header("Location: ../../student/report_item.php");
     exit();
 }
 ?>

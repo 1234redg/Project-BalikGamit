@@ -24,6 +24,176 @@ if (isset($_SESSION['msg'])) {
     <title>Report Item - BalikGamit</title>
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <style>
+        /* Within-file CSS to match image_561b82.jpg */
+        
+        .report-card {
+            background: #fff;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-top: 20px;
+        }
+
+        /* Status Toggle (Radio Buttons to Chips) */
+        .report-status-toggle {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .report-status-option input[type="radio"] {
+            display: none;
+        }
+
+        .report-status-chip {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: 1px solid #e0e0e0;
+            background: #fff;
+            cursor: pointer;
+            font-size: 14px;
+            color: #666;
+            transition: 0.3s;
+        }
+
+        .report-status-option input[type="radio"]:checked + .report-status-chip--lost {
+            background: #fee2e2;
+            color: #ef4444;
+            border-color: #fca5a5;
+        }
+
+        .report-status-option input[type="radio"]:checked + .report-status-chip--found {
+            background: #f3f4f6;
+            color: #374151;
+            border-color: #d1d5db;
+        }
+
+        /* Form Grid Layout */
+        .report-form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .report-form-group {
+            margin-bottom: 20px;
+        }
+
+        .report-form-group label {
+            display: block;
+            font-size: 11px;
+            font-weight: 800;
+            color: #435ebe; /* Blue accent from labels */
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        /* Input Styling */
+        .report-input-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .report-input-wrap i {
+            position: absolute;
+            left: 15px;
+            color: #adb5bd;
+            font-size: 14px;
+        }
+
+        .report-input-wrap input, 
+        .report-input-wrap select,
+        .report-form-group textarea {
+            width: 100%;
+            padding: 12px 15px 12px 40px;
+            border: 1px solid #dce7f1;
+            border-radius: 10px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .report-form-group textarea {
+            padding: 15px;
+            height: 150px;
+            resize: none;
+        }
+
+        /* File Upload Box */
+        .report-file-drop {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 40px;
+            border: 2px dashed #435ebe;
+            background: #f0f3ff;
+            border-radius: 12px;
+            cursor: pointer;
+            color: #435ebe;
+            font-weight: 700;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        .report-file-drop i { font-size: 24px; }
+        .report-file-drop input { display: none; }
+        .report-file-drop__hint { color: #8a94ad; font-weight: 400; }
+
+        .report-file-name {
+            display: block;
+            margin-top: 10px;
+            font-size: 12px;
+            color: #999;
+            font-style: italic;
+        }
+
+        /* Action Buttons */
+        .report-form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 30px;
+            border-top: 1px solid #f1f1f1;
+            padding-top: 20px;
+        }
+
+        .report-btn {
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: none;
+            transition: 0.3s;
+        }
+
+        .report-btn--cancel {
+            background: #fff;
+            border: 1px solid #dce7f1;
+            color: #666;
+        }
+
+        .report-btn--submit {
+            background: #1e293b;
+            color: #fff;
+        }
+
+        .report-btn:hover { opacity: 0.9; }
+
+        @media (max-width: 768px) {
+            .report-form-grid { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 <body>
     <div class="app-container">
@@ -138,7 +308,7 @@ if (isset($_SESSION['msg'])) {
                                     <label>Upload Photo <span class="report-label-optional">(Optional)</span></label>
                                     <label for="itemPhoto" class="report-file-drop">
                                         <i class="fa-solid fa-cloud-arrow-up"></i>
-                                        <span class="report-file-drop__text">Click to upload or drag & drop</span>
+                                        <span>Click to upload or drag & drop</span>
                                         <span class="report-file-drop__hint">PNG, JPG, WEBP — max 5 MB</span>
                                         <input type="file" id="itemPhoto" name="item_photo" accept="image/*">
                                     </label>

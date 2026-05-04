@@ -61,7 +61,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             // 6. Successful Login: Redirect to the student dashboard
             // Path: From actions/auth/ to root, then into student/
-            header("Location: ../../student/dashboard.php");
+            header("Location: ../../student/home.php");
             exit();
 
         } else {

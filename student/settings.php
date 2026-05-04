@@ -28,7 +28,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $new_pass = $_POST['new_pass'];
 
     try {
-        // Verification: If changing password, verify the current one
         if (!empty($new_pass)) {
             if (empty($current_pass) || !password_verify($current_pass, $user_data['Password'])) {
                 throw new Exception("Current password incorrect or missing.");
@@ -44,15 +43,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         
         if (mysqli_stmt_execute($stmt)) {
-            $message = "<p style='color: #2ecc71; background: rgba(46, 204, 113, 0.1); padding: 10px; border-radius: 4px;'>Profile updated successfully!</p>";
-            // Refresh local data
+            $message = "<div class='report-alert report-alert--success'><i class='fa-solid fa-circle-check'></i> Profile updated successfully!</div>";
             $user_data['First_Name'] = $first_name;
             $user_data['Last_Name'] = $last_name;
             $user_data['Email_Address'] = $email;
             $user_data['Contact_Number'] = $phone;
         }
     } catch (Exception $e) {
-        $message = "<p style='color: #e74c3c; background: rgba(231, 76, 60, 0.1); padding: 10px; border-radius: 4px;'>Error: " . $e->getMessage() . "</p>";
+        $message = "<div class='report-alert report-alert--error'><i class='fa-solid fa-circle-exclamation'></i> Error: " . $e->getMessage() . "</div>";
     }
 }
 ?>
@@ -62,98 +60,211 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Settings - BalikGamit</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
     <style>
-        body { margin: 0; padding: 0; background-color: #0a0a0a; color: white; font-family: 'Segoe UI', sans-serif; }
-        .app-container { display: flex; }
-        .main-content { flex: 1; padding: 40px; }
-        .settings-container { max-width: 800px; }
-        
-        h2 { font-size: 20px; margin-bottom: 25px; font-weight: 500; }
-        .section-label { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; display: block; }
-        
-        .input-group { margin-bottom: 25px; }
-        .row { display: flex; gap: 20px; margin-bottom: 25px; }
-        .col { flex: 1; }
-
-        input {
-            width: 100%;
-            padding: 12px;
-            background: #111;
-            border: 1px solid #222;
-            color: white;
-            border-radius: 6px;
-            box-sizing: border-box;
-            margin-top: 5px;
-        }
-
-        input:focus { outline: none; border-color: #3498db; }
-
-        .btn-save {
-            background: #0d1b2a; /* Dark blue button styling */
-            color: white;
-            border: 1px solid #1f3a5f;
-            padding: 14px;
-            border-radius: 6px;
-            cursor: pointer;
-            width: 100%;
-            font-size: 16px;
+        .report-card {
+            background: #fff;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             margin-top: 20px;
-            transition: background 0.3s;
         }
-        .btn-save:hover { background: #162a44; }
-        
-        hr { border: 0; border-top: 1px solid #222; margin: 30px 0; }
+
+        .report-form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .report-form-group {
+            margin-bottom: 20px;
+        }
+
+        .report-form-group label {
+            display: block;
+            font-size: 11px;
+            font-weight: 800;
+            color: #435ebe;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .report-input-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .report-input-wrap i {
+            position: absolute;
+            left: 15px;
+            color: #adb5bd;
+            font-size: 14px;
+        }
+
+        .report-input-wrap input {
+            width: 100%;
+            padding: 12px 15px 12px 40px;
+            border: 1px solid #dce7f1;
+            border-radius: 10px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .report-form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 30px;
+            border-top: 1px solid #f1f1f1;
+            padding-top: 20px;
+        }
+
+        .report-btn {
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: none;
+            transition: 0.3s;
+        }
+
+        .report-btn--cancel {
+            background: #fff;
+            border: 1px solid #dce7f1;
+            color: #666;
+        }
+
+        .report-btn--submit {
+            background: #1e293b;
+            color: #fff;
+        }
+
+        .report-alert {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .report-alert--success { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+        .report-alert--error { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+
+        .section-title {
+            font-size: 16px;
+            color: #1e293b;
+            margin: 0 0 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+        }
+
+        hr { border: 0; border-top: 1px solid #f1f1f1; margin: 30px 0; }
+
+        @media (max-width: 768px) {
+            .report-form-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
     <div class="app-container">
         <?php include_once '../includes/sidebar.php'; ?>
-        
+
         <div class="main-content">
-            <div class="settings-container">
-                <h2>Profile Settings</h2>
-                <?php echo $message; ?>
+            <div class="dashboard-header">
+                <div class="dashboard-header-left">
+                    <span class="dashboard-section-label">Account Management</span>
+                    <h1>Settings</h1>
+                    <p>Update your personal information and keep your account secure.</p>
+                </div>
+                <div class="dashboard-user-card">
+                    <div class="user-avatar-circle">
+                        <?php echo strtoupper(substr($user_data['First_Name'], 0, 1)); ?>
+                    </div>
+                    <div class="user-card-info">
+                        <span class="user-card-name"><?php echo htmlspecialchars($user_data['First_Name'] . ' ' . $user_data['Last_Name']); ?></span>
+                        <span class="user-card-status">● Online</span>
+                    </div>
+                </div>
+            </div>
 
+            <?php echo $message; ?>
+
+            <div class="report-card">
                 <form action="settings.php" method="POST">
-                    <!-- Name Row -->
-                    <div class="row">
-                        <div class="col">
-                            <span class="section-label">First Name</span>
-                            <input type="text" name="first_name" value="<?php echo htmlspecialchars($user_data['First_Name']); ?>" required>
+                    
+                    <h2 class="section-title"><i class="fa-solid fa-user-gear"></i> Personal Profile</h2>
+                    <div class="report-form-grid">
+                        <div class="report-form-group">
+                            <label for="firstName">First Name</label>
+                            <div class="report-input-wrap">
+                                <i class="fa-solid fa-address-card"></i>
+                                <input type="text" id="firstName" name="first_name" value="<?php echo htmlspecialchars($user_data['First_Name']); ?>" required>
+                            </div>
                         </div>
-                        <div class="col">
-                            <span class="section-label">Last Name</span>
-                            <input type="text" name="last_name" value="<?php echo htmlspecialchars($user_data['Last_Name']); ?>" required>
+
+                        <div class="report-form-group">
+                            <label for="lastName">Last Name</label>
+                            <div class="report-input-wrap">
+                                <i class="fa-solid fa-address-card"></i>
+                                <input type="text" id="lastName" name="last_name" value="<?php echo htmlspecialchars($user_data['Last_Name']); ?>" required>
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Email -->
-                    <div class="input-group">
-                        <span class="section-label">Email</span>
-                        <input type="email" name="email" value="<?php echo htmlspecialchars($user_data['Email_Address']); ?>" required>
-                    </div>
+                        <div class="report-form-group">
+                            <label for="email">Email Address</label>
+                            <div class="report-input-wrap">
+                                <i class="fa-solid fa-envelope"></i>
+                                <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($user_data['Email_Address']); ?>" required>
+                            </div>
+                        </div>
 
-                    <!-- Contact Number -->
-                    <div class="input-group">
-                        <span class="section-label">Contact Number</span>
-                        <input type="text" name="phone" value="<?php echo htmlspecialchars($user_data['Contact_Number']); ?>" required>
+                        <div class="report-form-group">
+                            <label for="phone">Contact Number</label>
+                            <div class="report-input-wrap">
+                                <i class="fa-solid fa-phone"></i>
+                                <input type="text" id="phone" name="phone" value="<?php echo htmlspecialchars($user_data['Contact_Number']); ?>" required>
+                            </div>
+                        </div>
                     </div>
 
                     <hr>
 
-                    <h2>Change Password</h2>
-                    <div class="row">
-                        <div class="col">
-                            <span class="section-label">Current Password</span>
-                            <input type="password" name="current_pass" placeholder="Current password">
+                    <h2 class="section-title"><i class="fa-solid fa-shield-halved"></i> Security</h2>
+                    <div class="report-form-grid">
+                        <div class="report-form-group">
+                            <label for="currentPass">Current Password</label>
+                            <div class="report-input-wrap">
+                                <i class="fa-solid fa-lock-open"></i>
+                                <input type="password" id="currentPass" name="current_pass" placeholder="Required for password change">
+                            </div>
                         </div>
-                        <div class="col">
-                            <span class="section-label">New Password</span>
-                            <input type="password" name="new_pass" placeholder="New password">
+
+                        <div class="report-form-group">
+                            <label for="newPass">New Password</label>
+                            <div class="report-input-wrap">
+                                <i class="fa-solid fa-lock"></i>
+                                <input type="password" id="newPass" name="new_pass" placeholder="Leave blank to keep current">
+                            </div>
                         </div>
                     </div>
 
-                    <button type="submit" class="btn-save">Save Changes</button>
+                    <div class="report-form-actions">
+                        <a href="home.php" class="report-btn report-btn--cancel">Discard Changes</a>
+                        <button type="submit" class="report-btn report-btn--submit">
+                            <i class="fa-solid fa-floppy-disk"></i> Save Settings
+                        </button>
+                    </div>
+
                 </form>
             </div>
         </div>
