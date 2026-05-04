@@ -118,20 +118,21 @@ $result = mysqli_query($conn, $query);
 
                 <div class="item-grid">
                     <?php if ($result && mysqli_num_rows($result) > 0): ?>
+                        <?php 
+                            $images = ['airpods.avif', 'id.jpg', 'iphone.avif', 'keychain.jpg', 'wallet.jpg', 'watch.webp'];
+                            $counter = 0;
+                        ?>
                         <?php while ($row = mysqli_fetch_assoc($result)): ?>
                             <div class="item-card">
                                 <?php 
-                                    $db_image_path = $row['Item_Image'];
-                                    $image_src = !empty($db_image_path) ? "../" . $db_image_path : "";
+                                    $image_file = $images[$counter % 6];
+                                    $image_src = "/Project-BalikGamit/assets/images/" . $image_file;
+                                    $counter++;
                                 ?>
-                                <?php if (!empty($db_image_path)): ?>
-                                    <img src="<?= htmlspecialchars($image_src); ?>" 
-                                         class="item-image" 
-                                         alt="Item Photo"
-                                         onerror="this.src='https://via.placeholder.com/300x200?text=No+Image+Found';">
-                                <?php else: ?>
-                                    <div class="item-image" style="display: flex; align-items: center; justify-content: center; color: #444;">No Image Available</div>
-                                <?php endif; ?>
+                                <img src="<?= $image_src; ?>" 
+                                     class="item-image" 
+                                     alt="Item Photo"
+                                     style="width:100%;height:100%;object-fit:cover;">
                                 
                                 <div class="item-info">
                                     <span class="status-badge <?= ($row['Item_Status'] == 'Found') ? 'status-found' : 'status-lost'; ?>">
