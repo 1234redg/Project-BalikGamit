@@ -49,6 +49,7 @@ if (isset($_SESSION['user_id']) && isset($conn)) {
             <a href="my_reports.php">
                 <i class="fa-solid fa-file-lines sidebar-icon"></i>
                 My Reports
+
             </a>
         </li>
     </ul>
