@@ -3,6 +3,26 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 $current_page = basename($_SERVER['PHP_SELF']);
+
+// Logic from nav_master to fetch the user's first name[cite: 2]
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+$firstName = "Guest";
+
+// Ensure $conn is available from your db.php or config.php
+if (isset($_SESSION['user_id']) && isset($conn)) {
+    $u_id = $_SESSION['user_id'];
+    $query = "SELECT First_Name FROM user_table WHERE User_ID = ?";
+    $stmt = mysqli_prepare($conn, $query);
+    mysqli_stmt_bind_param($stmt, "i", $u_id);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    if ($user = mysqli_fetch_assoc($res)) {
+        $firstName = htmlspecialchars($user['First_Name']);
+    }
+}
 ?>
 <div class="sidebar">
     <div class="sidebar-brand">

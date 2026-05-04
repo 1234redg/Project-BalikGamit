@@ -9,32 +9,50 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
+$current_user = $_SESSION['user_id'];
 $message = "";
 
+// Fetch current user data to pre-fill fields
+$fetch_sql = "SELECT First_Name, Last_Name, Email_Address, Contact_Number, Password FROM User_Table WHERE User_ID = ?";
+$fetch_stmt = mysqli_prepare($conn, $fetch_sql);
+mysqli_stmt_bind_param($fetch_stmt, "i", $current_user);
+mysqli_stmt_execute($fetch_stmt);
+$user_data = mysqli_fetch_assoc(mysqli_stmt_get_result($fetch_stmt));
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $current_user = $_SESSION['user_id']; 
-    $new_pass = $_POST['pass'];
-    $conf_pass = $_POST['conf_pass'];
+    $first_name = $_POST['first_name'];
+    $last_name = $_POST['last_name'];
+    $email = $_POST['email'];
+    $phone = $_POST['phone'];
+    $current_pass = $_POST['current_pass'];
+    $new_pass = $_POST['new_pass'];
 
     try {
+        // Verification: If changing password, verify the current one
         if (!empty($new_pass)) {
-            if ($new_pass !== $conf_pass) {
-                throw new Exception("Passwords do not match!");
+            if (empty($current_pass) || !password_verify($current_pass, $user_data['Password'])) {
+                throw new Exception("Current password incorrect or missing.");
             }
             $hashed_password = password_hash($new_pass, PASSWORD_DEFAULT);
-            $sql = "UPDATE User_Table SET Email_Address = ?, Contact_Number = ?, Password = ? WHERE User_ID = ?";
+            $sql = "UPDATE User_Table SET First_Name = ?, Last_Name = ?, Email_Address = ?, Contact_Number = ?, Password = ? WHERE User_ID = ?";
             $stmt = mysqli_prepare($conn, $sql);
-            mysqli_stmt_bind_param($stmt, "sssi", $_POST['email'], $_POST['phone'], $hashed_password, $current_user);
-            mysqli_stmt_execute($stmt);
+            mysqli_stmt_bind_param($stmt, "sssssi", $first_name, $last_name, $email, $phone, $hashed_password, $current_user);
         } else {
-            $sql = "UPDATE User_Table SET Email_Address = ?, Contact_Number = ? WHERE User_ID = ?";
+            $sql = "UPDATE User_Table SET First_Name = ?, Last_Name = ?, Email_Address = ?, Contact_Number = ? WHERE User_ID = ?";
             $stmt = mysqli_prepare($conn, $sql);
-            mysqli_stmt_bind_param($stmt, "ssi", $_POST['email'], $_POST['phone'], $current_user);
-            mysqli_stmt_execute($stmt);
+            mysqli_stmt_bind_param($stmt, "ssssi", $first_name, $last_name, $email, $phone, $current_user);
         }
-        $message = "<p style='color: #28a745; background: rgba(40, 167, 69, 0.1); padding: 10px; border-radius: 4px;'>Profile updated successfully!</p>";
+        
+        if (mysqli_stmt_execute($stmt)) {
+            $message = "<p style='color: #2ecc71; background: rgba(46, 204, 113, 0.1); padding: 10px; border-radius: 4px;'>Profile updated successfully!</p>";
+            // Refresh local data
+            $user_data['First_Name'] = $first_name;
+            $user_data['Last_Name'] = $last_name;
+            $user_data['Email_Address'] = $email;
+            $user_data['Contact_Number'] = $phone;
+        }
     } catch (Exception $e) {
-        $message = "<p style='color: #dc3545; background: rgba(220, 53, 69, 0.1); padding: 10px; border-radius: 4px;'>Update failed: " . $e->getMessage() . "</p>";
+        $message = "<p style='color: #e74c3c; background: rgba(231, 76, 60, 0.1); padding: 10px; border-radius: 4px;'>Error: " . $e->getMessage() . "</p>";
     }
 }
 ?>
@@ -44,59 +62,98 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Settings - BalikGamit</title>
+    <style>
+        body { margin: 0; padding: 0; background-color: #0a0a0a; color: white; font-family: 'Segoe UI', sans-serif; }
+        .app-container { display: flex; }
+        .main-content { flex: 1; padding: 40px; }
+        .settings-container { max-width: 800px; }
+        
+        h2 { font-size: 20px; margin-bottom: 25px; font-weight: 500; }
+        .section-label { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; display: block; }
+        
+        .input-group { margin-bottom: 25px; }
+        .row { display: flex; gap: 20px; margin-bottom: 25px; }
+        .col { flex: 1; }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            background: #111;
+            border: 1px solid #222;
+            color: white;
+            border-radius: 6px;
+            box-sizing: border-box;
+            margin-top: 5px;
+        }
+
+        input:focus { outline: none; border-color: #3498db; }
+
+        .btn-save {
+            background: #0d1b2a; /* Dark blue button styling */
+            color: white;
+            border: 1px solid #1f3a5f;
+            padding: 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            margin-top: 20px;
+            transition: background 0.3s;
+        }
+        .btn-save:hover { background: #162a44; }
+        
+        hr { border: 0; border-top: 1px solid #222; margin: 30px 0; }
+    </style>
 </head>
-<body style="margin: 0; padding: 0; background-color: #0a0a0a; color: white;">
+<body>
     <div class="app-container">
         <?php include_once '../includes/sidebar.php'; ?>
         
-        <div class="main-content" style="display: flex; flex-direction: column;">
-            <?php include '../includes/nav_master.php'; ?>
-
-            <div class="content-body" style="padding-top: 20px;">
-                <h2>Account Settings</h2>
-                <p style="color: #888;">Update your contact information and security credentials.</p>
-                <hr style="border: 0; border-top: 1px solid #333; margin: 20px 0;">
-
+        <div class="main-content">
+            <div class="settings-container">
+                <h2>Profile Settings</h2>
                 <?php echo $message; ?>
 
-                <form action="settings.php" method="POST" style="max-width: 500px;">
-                    <fieldset style="border: 1px solid #333; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
-                        <legend style="padding: 0 10px; font-weight: bold; color: #007bff;">Contact Information</legend>
-                        
-                        <div style="margin-bottom: 15px;">
-                            <label>New Email Address:</label><br>
-                            <input type="email" name="email" placeholder="email@example.com" required 
-                                   style="width: 100%; padding: 10px; background: #1a1a1a; border: 1px solid #333; color: white; border-radius: 4px; margin-top: 5px;">
+                <form action="settings.php" method="POST">
+                    <!-- Name Row -->
+                    <div class="row">
+                        <div class="col">
+                            <span class="section-label">First Name</span>
+                            <input type="text" name="first_name" value="<?php echo htmlspecialchars($user_data['First_Name']); ?>" required>
                         </div>
-
-                        <div style="margin-bottom: 5px;">
-                            <label>New Contact Number:</label><br>
-                            <input type="text" name="phone" placeholder="09123456789" required 
-                                   style="width: 100%; padding: 10px; background: #1a1a1a; border: 1px solid #333; color: white; border-radius: 4px; margin-top: 5px;">
+                        <div class="col">
+                            <span class="section-label">Last Name</span>
+                            <input type="text" name="last_name" value="<?php echo htmlspecialchars($user_data['Last_Name']); ?>" required>
                         </div>
-                    </fieldset>
+                    </div>
 
-                    <fieldset style="border: 1px solid #333; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
-                        <legend style="padding: 0 10px; font-weight: bold; color: #007bff;">Security</legend>
-                        <p style="font-size: 12px; color: #888; margin-bottom: 15px;">Leave blank to keep your current password.</p>
-                        
-                        <div style="margin-bottom: 15px;">
-                            <label>New Password:</label><br>
-                            <input type="password" name="pass" 
-                                   style="width: 100%; padding: 10px; background: #1a1a1a; border: 1px solid #333; color: white; border-radius: 4px; margin-top: 5px;">
+                    <!-- Email -->
+                    <div class="input-group">
+                        <span class="section-label">Email</span>
+                        <input type="email" name="email" value="<?php echo htmlspecialchars($user_data['Email_Address']); ?>" required>
+                    </div>
+
+                    <!-- Contact Number -->
+                    <div class="input-group">
+                        <span class="section-label">Contact Number</span>
+                        <input type="text" name="phone" value="<?php echo htmlspecialchars($user_data['Contact_Number']); ?>" required>
+                    </div>
+
+                    <hr>
+
+                    <h2>Change Password</h2>
+                    <div class="row">
+                        <div class="col">
+                            <span class="section-label">Current Password</span>
+                            <input type="password" name="current_pass" placeholder="Current password">
                         </div>
-
-                        <div style="margin-bottom: 5px;">
-                            <label>Confirm New Password:</label><br>
-                            <input type="password" name="conf_pass" 
-                                   style="width: 100%; padding: 10px; background: #1a1a1a; border: 1px solid #333; color: white; border-radius: 4px; margin-top: 5px;">
+                        <div class="col">
+                            <span class="section-label">New Password</span>
+                            <input type="password" name="new_pass" placeholder="New password">
                         </div>
-                    </fieldset>
+                    </div>
 
-                    <button type="submit" 
-                            style="background: #007bff; color: white; border: none; padding: 12px 25px; border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%;">
-                        Save Changes
-                    </button>
+                    <button type="submit" class="btn-save">Save Changes</button>
                 </form>
             </div>
         </div>
