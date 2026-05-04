@@ -26,17 +26,17 @@ if (isset($_SESSION['user_id']) && isset($conn)) {
 ?>
 <div class="sidebar">
     <div class="sidebar-brand">
-        <a href="dashboard.php" class="logo-link">
+        <a href="home.php" class="logo-link">
             <img src="../assets/images/BalikGamitLogo2.png" alt="BalikGamit Logo" class="sidebar-logo">
         </a>
     </div>
 
     <div class="sidebar-section-label">MAIN</div>
     <ul class="sidebar-menu">
-        <li class="<?= $current_page === 'dashboard.php' ? 'active' : '' ?>">
-            <a href="dashboard.php">
-                <i class="fa-solid fa-gauge-high sidebar-icon"></i>
-                Dashboard
+        <li class="<?= $current_page === 'home.php' ? 'active' : '' ?>">
+            <a href="home.php">
+                <i class="fa-solid fa-house sidebar-icon"></i>
+                Home
             </a>
         </li>
         <li class="<?= $current_page === 'report_item.php' ? 'active' : '' ?>">
