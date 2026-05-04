@@ -19,7 +19,12 @@ if (isset($_SESSION['user_id'])) {
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
     if ($user = mysqli_fetch_assoc($result)) {
-        $displayName = htmlspecialchars($user['First_Name'] ?: $user['Username']);
+        $firstName = htmlspecialchars($user['First_Name'] ?? '');
+        $lastName = htmlspecialchars($user['Last_Name'] ?? '');
+        $displayName = trim($firstName . ' ' . $lastName);
+        if (empty($displayName)) {
+            $displayName = htmlspecialchars($user['Username']);
+        }
         $initial = strtoupper(substr($displayName, 0, 1));
     }
 }
@@ -390,7 +395,7 @@ while ($cat = mysqli_fetch_assoc($catResult)) {
         </div>
 
         <!-- RESULT COUNT -->
-        <p class="result-count" id="resultCount" style="display:none;">
+        <p class="result-count" id="resultCount" style=" font-size: 16px; margin-bottom: 16px;">
             Showing <strong id="resultNum">0</strong> item(s)
         </p>
 
@@ -489,9 +494,13 @@ function loadCards() {
             $.each(items, function(index, item) {
                 const statusCls = item.Item_Status === 'Lost' ? 'status-lost' : 'status-found';
                 const action    = item.Item_Status === 'Lost' ? 'Search now' : 'Claim now';
-                const images    = ['airpods.avif', 'id.jpg', 'iphone.avif', 'keychain.jpg', 'wallet.jpg', 'watch.webp'];
-                const imgFile   = images[index % images.length];
-                const imgHtml   = `<img src="/Project-BalikGamit/assets/images/${imgFile}" alt="${esc(item.Item_Name)}" style="width:100%;height:100%;object-fit:cover;">`;
+                
+                // IMAGE LOGIC: Database stores "uploads/filename.png"
+                // home.php is in /student/, uploads is in /uploads/
+                const imgPath = item.Item_Image ? `../${item.Item_Image}` : null;
+                const imgHtml = imgPath 
+                    ? `<img src="${imgPath}" alt="${esc(item.Item_Name)}" style="width:100%;height:100%;object-fit:cover;">`
+                    : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#222;color:#444;"><i class="fa-solid fa-image fa-2x"></i></div>`;
 
                 const $card = $(`
                     <div class="item-card" data-report-id="${item.Report_ID}">
@@ -562,14 +571,16 @@ function openModal(reportId) {
             const statusCls = d.Item_Status === 'Lost' ? 'status-lost' : 'status-found';
             $('#modalStatusBadge').addClass(statusCls).text(d.Item_Status);
 
-            const staticImages = ['airpods.avif', 'id.jpg', 'iphone.avif', 'keychain.jpg', 'wallet.jpg', 'watch.webp'];
-            const randomImg = staticImages[Math.floor(Math.random() * staticImages.length)];
-            
-            $('#modalImg')
-                .attr('src', `/Project-BalikGamit/assets/images/${randomImg}`)
-                .attr('alt', esc(d.Item_Name))
-                .show();
-            $('#modalNoImage').hide();
+            if (d.Item_Image) {
+                $('#modalImg')
+                    .attr('src', `../${d.Item_Image}`)
+                    .attr('alt', esc(d.Item_Name))
+                    .show();
+                $('#modalNoImage').hide();
+            } else {
+                $('#modalImg').hide();
+                $('#modalNoImage').show();
+            }
 
             // Right pane — details
             const reporterName = d.Reporter ? esc(d.Reporter) : 'Unknown';

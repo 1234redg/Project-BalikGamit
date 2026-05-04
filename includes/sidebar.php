@@ -45,27 +45,6 @@ if (isset($_SESSION['user_id']) && isset($conn)) {
                 Report Item
             </a>
         </li>
-
-        <li class="<?= ($current_page == 'report.php') ? 'active' : ''; ?>"><a href="report.php">Report Item</a></li>
-        <li class="<?= ($current_page == 'my-reports.php') ? 'active' : ''; ?>"><a href="my-reports.php">My Reports</a>
-        </li>
-        <li class="<?= ($current_page == 'history.php') ? 'active' : ''; ?>"><a href="history.php">History</a></li>
-    </ul>
-
-    <p class="menu-label">ACCOUNT</p>
-    
-    <!-- User Display added here -->
-    <div class="logged-in-user">
-        <span>Logged in as</span>
-        <strong><?php echo $firstName; ?></strong>
-    </div>
-
-    <ul>
-        <li class="<?= ($current_page == 'settings.php') ? 'active' : ''; ?>"><a href="settings.php">Settings</a></li>
-        <li>
-            <a href="#" onclick="openLogoutModal(); return false;">
-                Logout
-
         <li class="<?= $current_page === 'my_reports.php' ? 'active' : '' ?>">
             <a href="my_reports.php">
                 <i class="fa-solid fa-file-lines sidebar-icon"></i>
@@ -73,6 +52,7 @@ if (isset($_SESSION['user_id']) && isset($conn)) {
 
             </a>
         </li>
+        
     </ul>
 
     <div class="sidebar-section-label">ACCOUNT</div>
@@ -88,7 +68,7 @@ if (isset($_SESSION['user_id']) && isset($conn)) {
     <div class="sidebar-footer">
         <ul class="sidebar-menu">
             <li>
-                <a href="../logout.php" class="logout-link">
+                <a href="../login.php" class="logout-link">
                     <i class="fa-solid fa-right-from-bracket sidebar-icon"></i>
                     Log out
                 </a>

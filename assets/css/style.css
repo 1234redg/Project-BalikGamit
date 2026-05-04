@@ -1404,3 +1404,374 @@ body {
     }
 }
 
+/* ============================================
+   MY REPORTS PAGE
+   ============================================ */
+
+/* Alert banners */
+.myreports-alert {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 18px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 22px;
+}
+
+.myreports-alert--success {
+    background: var(--green-bg);
+    color: var(--green-text);
+    border: 1px solid #bbf7d0;
+}
+
+.myreports-alert--error {
+    background: var(--red-bg);
+    color: var(--red-text);
+    border: 1px solid #fecaca;
+}
+
+/* Count label */
+.myreports-count {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+}
+
+/* New report button */
+.myreports-new-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 10px 20px;
+    background: var(--primary);
+    color: white;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+    text-decoration: none;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: background 0.18s, transform 0.12s;
+}
+
+.myreports-new-btn:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+}
+
+/* Empty state icon fix */
+.dashboard-empty i {
+    font-size: 36px;
+    color: var(--text-muted);
+}
+
+/* Link inside empty state */
+.myreports-link {
+    color: var(--accent);
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.myreports-link:hover {
+    text-decoration: underline;
+}
+
+/* Card action buttons */
+.myreports-card-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.myreports-icon-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+    font-family: 'Poppins', sans-serif;
+    border: none;
+    cursor: pointer;
+    transition: all 0.18s ease;
+}
+
+.myreports-icon-btn--edit {
+    background: var(--blue-bg);
+    color: var(--accent);
+}
+
+.myreports-icon-btn--edit:hover {
+    background: #dbeafe;
+}
+
+.myreports-icon-btn--delete {
+    background: var(--red-bg);
+    color: var(--red-text);
+    padding: 5px 10px;
+}
+
+.myreports-icon-btn--delete:hover {
+    background: #fecaca;
+}
+
+/* ============================================
+   MODALS
+   ============================================ */
+
+/* Prevent body scroll when modal open */
+body.modal-open {
+    overflow: hidden;
+}
+
+/* Overlay backdrop */
+.myreports-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 20, 40, 0.45);
+    backdrop-filter: blur(3px);
+    z-index: 999;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+
+.myreports-overlay.active {
+    display: flex;
+}
+
+/* Modal box */
+.myreports-modal {
+    background: white;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 680px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    animation: modalSlideIn 0.22s ease;
+}
+
+.myreports-modal--sm {
+    max-width: 420px;
+}
+
+@keyframes modalSlideIn {
+    from { opacity: 0; transform: translateY(16px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0)   scale(1);    }
+}
+
+/* Modal header */
+.myreports-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px 28px 18px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+}
+
+.myreports-modal-header h2 {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.myreports-modal-header h2 i {
+    color: var(--accent);
+    font-size: 15px;
+}
+
+.myreports-modal-close {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: var(--bg-page);
+    color: var(--text-secondary);
+    font-size: 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, color 0.15s;
+}
+
+.myreports-modal-close:hover {
+    background: var(--red-bg);
+    color: var(--red-text);
+}
+
+/* Modal body / form */
+.myreports-modal-body {
+    padding: 24px 28px 0;
+    flex: 1;
+}
+
+/* Form grid inside modal */
+.myreports-modal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 24px;
+}
+
+.myreports-modal-group {
+    margin-bottom: 18px;
+}
+
+.myreports-modal-group--full {
+    grid-column: 1 / -1;
+}
+
+.myreports-modal-group label {
+    display: block;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 7px;
+}
+
+/* Reuse report-input-wrap styles already in style.css */
+.myreports-modal-group textarea {
+    width: 100%;
+    height: 100px;
+    padding: 12px 14px;
+    border: 1px solid var(--input-border);
+    border-radius: 10px;
+    font-size: 14px;
+    font-family: 'Poppins', sans-serif;
+    color: var(--text-primary);
+    background: white;
+    outline: none;
+    resize: vertical;
+    transition: border-color 0.18s, box-shadow 0.18s;
+}
+
+.myreports-modal-group textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
+/* Radio status row */
+.myreports-radio-row {
+    display: flex;
+    gap: 20px;
+}
+
+.myreports-radio-opt {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 14px;
+    color: var(--text-primary);
+    cursor: pointer;
+}
+
+.myreports-radio-opt input[type="radio"] {
+    accent-color: var(--accent);
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+}
+
+/* Modal footer (buttons row) */
+.myreports-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 20px 28px 24px;
+    border-top: 1px solid var(--border);
+    margin-top: 8px;
+    flex-shrink: 0;
+}
+
+/* Danger button */
+.report-btn--danger {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 24px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+    border: none;
+    background: var(--red-text);
+    color: white;
+    transition: background 0.18s, transform 0.12s;
+}
+
+.report-btn--danger:hover {
+    background: #b91c1c;
+    transform: translateY(-1px);
+}
+
+/* Delete modal body */
+.myreports-delete-body {
+    padding: 28px 28px 8px;
+    text-align: center;
+}
+
+.myreports-delete-body p {
+    font-size: 15px;
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+.myreports-delete-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--red-bg);
+    color: var(--red-text);
+    font-size: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 18px;
+}
+
+.myreports-delete-sub {
+    font-size: 13px !important;
+    color: var(--text-muted) !important;
+    margin-top: 6px;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 900px) {
+    .myreports-modal-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .myreports-modal {
+        max-height: 95vh;
+    }
+
+    .myreports-modal-footer {
+        flex-direction: column-reverse;
+    }
+
+    .report-btn--danger,
+    .report-btn--cancel,
+    .report-btn--submit {
+        width: 100%;
+        justify-content: center;
+    }
+}
