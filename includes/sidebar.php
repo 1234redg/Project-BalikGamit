@@ -139,8 +139,16 @@ if (isset($_SESSION['user_id']) && isset($conn)) {
                 href="/Balikgamit/student/dashboard.php">Dashboard</a></li>
         <li class="<?= ($current_page == 'reported.php') ? 'active' : ''; ?>"><a href="reported.php">Reported Items</a>
         </li>
+<<<<<<< Updated upstream
         <li class="<?= ($current_page == 'report.php') ? 'active' : ''; ?>"><a href="report.php">Report Item</a></li>
         <li class="<?= ($current_page == 'my-reports.php') ? 'active' : ''; ?>"><a href="my-reports.php">My Reports</a>
+=======
+        <li class="<?= $current_page === 'report-item.php' ? 'active' : '' ?>">
+            <a href="report-item.php">
+                <i class="fa-solid fa-circle-plus sidebar-icon"></i>
+                Report Item
+            </a>
+>>>>>>> Stashed changes
         </li>
         <li class="<?= ($current_page == 'history.php') ? 'active' : ''; ?>"><a href="history.php">History</a></li>
     </ul>
