@@ -42,6 +42,7 @@ if (isset($_SESSION['user_id']) && isset($conn)) {
         color: #3498db;
         font-weight: bold;
     }
+    /* Nav styling */
 </style>
 
 <nav class="dev-nav">
@@ -61,7 +62,7 @@ if (isset($_SESSION['user_id']) && isset($conn)) {
         <a href="/balikgamit/auth/forgot-password.php">Forgot Password</a>
         <a href="/balikgamit/auth/change-password.php">Change Password</a>
         <a href="/balikgamit/auth/verify-email.php">Verify Email</a>
-        <a href="/balikgamit/auth/logout.php" style="color: #e74c3c;">Logout</a>
+        <a href="#" onclick="openLogoutModal(); return false;" style="color: #e74c3c;">Logout</a>
     </div>
 
     <div class="nav-group">
@@ -69,3 +70,8 @@ if (isset($_SESSION['user_id']) && isset($conn)) {
         <a href="/balikgamit/includes/view-database-temporary.php">View database</a>
     </div>
 </nav>
+
+<?php
+// Include the shared logout modal (provides openLogoutModal/closeLogoutModal)
+include_once __DIR__ . '/../logout-modal.php';
+?>

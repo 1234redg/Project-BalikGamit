@@ -3,6 +3,7 @@ require '../config/db.php';
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -27,5 +28,7 @@ if (session_status() === PHP_SESSION_NONE) {
             </div>
         </div>
     </div>
+    
+    <?php include_once '../logout-modal.php'; ?>
 </body>
 </html>

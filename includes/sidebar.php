@@ -158,8 +158,7 @@ if (isset($_SESSION['user_id']) && isset($conn)) {
     <ul>
         <li class="<?= ($current_page == 'settings.php') ? 'active' : ''; ?>"><a href="settings.php">Settings</a></li>
         <li>
-            <a href="../logout.php"
-                onclick="return confirm('Are you sure you want to log out? You will need to log in again to access your account.');">
+            <a href="#" onclick="openLogoutModal(); return false;">
                 Logout
             </a>
         </li>

@@ -25,6 +25,52 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit();
     }
 
+    // ============================================
+    // RECAPTCHA v2 VERIFICATION
+    // ============================================
+    if (!isset($_POST['g-recaptcha-response']) || empty($_POST['g-recaptcha-response'])) {
+        header("Location: ../../login.php?error=recaptcha");
+        exit();
+    }
+
+    $recaptchaResponse = $_POST['g-recaptcha-response'];
+    $recaptchaSecretKey = '6LeEo9gsAAAAAOhzmpGCh0BT3HIaCKhpLxx3_rZ_'; // Your Secret Key
+    
+    // Send the response to Google to verify it
+    $verificationUrl = 'https://www.google.com/recaptcha/api/siteverify';
+    
+    $recaptchaData = [
+        'secret' => $recaptchaSecretKey,
+        'response' => $recaptchaResponse
+    ];
+    
+    // Use PHP's stream context to make a POST request
+    $options = [
+        'http' => [
+            'method' => 'POST',
+            'header' => 'Content-Type: application/x-www-form-urlencoded',
+            'content' => http_build_query($recaptchaData)
+        ]
+    ];
+    
+    $context = stream_context_create($options);
+    $response = @file_get_contents($verificationUrl, false, $context);
+    
+    // If Google doesn't respond, fail
+    if ($response === false) {
+        header("Location: ../../login.php?error=recaptcha");
+        exit();
+    }
+    
+    // Decode Google's JSON response
+    $responseData = json_decode($response, true);
+    
+    // Check: success must be true (v2 doesn't have a score)
+    if (!isset($responseData['success']) || !$responseData['success']) {
+        header("Location: ../../login.php?error=recaptcha");
+        exit();
+    }
+
     // 3. Query the User_Table
     // Based on BalikGamit project requirements for email or username login
     $sql = "SELECT * FROM User_Table WHERE Username = ? OR Email_Address = ?";

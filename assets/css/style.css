@@ -204,7 +204,7 @@ body {
 }
 
 .form-row {
-    display: flex;
+    display: flex;  
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
@@ -251,6 +251,51 @@ body {
 
 .login-btn:hover {
     background: var(--primary-hover);
+}
+
+/* Loading spinner when login is in progress */
+.login-btn.loading {
+    position: relative;
+    color: transparent;
+}
+.login-btn.loading::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255,255,255,0.35);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Success check animation shown before loading */
+.login-btn.success {
+    position: relative;
+    color: transparent;
+    background: #16a34a; /* green */
+}
+.login-btn.success::after {
+    content: '✓';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(0.6);
+    color: white;
+    font-size: 18px;
+    line-height: 1;
+    animation: pop 260ms ease-out forwards;
+}
+@keyframes pop {
+    0% { transform: translate(-50%, -50%) scale(0.2); opacity: 0; }
+    60% { transform: translate(-50%, -50%) scale(1.08); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
 }
 
 .signup-link {
@@ -321,4 +366,139 @@ body {
         flex: 1;
         width: 100%;
     }
+}
+
+
+/* ─── Error Message ────────────────────────────────────────────────────────── */
+
+.error-msg {
+    color: #ff4d4d;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+/* ─── Login Button — Loading / Spinner State ───────────────────────────────── */
+
+.login-btn.loading {
+    position: relative;
+    color: transparent !important; /* hides "Login" text while spinning */
+    pointer-events: none;
+    cursor: not-allowed;
+    opacity: 0.85;
+}
+
+.login-btn.loading::after {
+    content: "";
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 3px solid rgba(255, 255, 255, 0.35);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: btn-spin 0.7s linear infinite;
+}
+
+@keyframes btn-spin {
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+/* reCAPTCHA widget — hidden until the user clicks the Login button */
+#recaptcha-container {
+    display: none;          /* starts hidden; login.js sets display:block */
+    margin-bottom: 16px;
+    min-height: 78px;       /* reserves space for the iframe so no layout jump */
+}
+
+
+/* Modal Overlay (log out) */
+.modal-overlay {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6); /* Dim background */
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Modal Box */
+.modal-content {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-content .logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1rem;
+}
+
+.modal-title {
+    font-weight: bold;
+    color: #002D62; /* Matching your theme */
+    font-size: 1.2rem;
+}
+
+.modal-content h2 {
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.modal-content p {
+    color: #666;
+    margin-bottom: 2rem;
+}
+
+/* Buttons */
+.modal-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.cancel-btn, .confirm-btn {
+    flex: 1;
+    padding: 12px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.cancel-btn {
+    background: #f0f0f0;
+    color: #333;
+}
+
+.confirm-btn {
+    background: #002D62; /* Consistent with login-btn */
+    color: white;
+}
+
+.confirm-btn:hover {
+    background: #003a80;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
