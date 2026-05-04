@@ -1,5 +1,7 @@
 <?php
-// sidebar.php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 $current_page = basename($_SERVER['PHP_SELF']);
 
 // Logic from nav_master to fetch the user's first name[cite: 2]
@@ -22,125 +24,28 @@ if (isset($_SESSION['user_id']) && isset($conn)) {
     }
 }
 ?>
-<style>
-    :root {
-        --sidebar-width: 260px;
-        --sidebar-bg: #001529; /* Dark blue from your screenshot[cite: 1] */
-        --main-bg: #0a0a0a;    /* Deep black for content area[cite: 1] */
-    }
-
-    /* GLOBAL FONT & RESET[cite: 1] */
-    html, body {
-        margin: 0;
-        padding: 0;
-        background-color: var(--main-bg);
-        color: white;
-        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    }
-
-    .app-container {
-        display: flex;
-        min-height: 100vh;
-        width: 100%;
-        overflow-x: hidden;
-    }
-
-    .sidebar {
-        width: var(--sidebar-width);
-        background-color: var(--sidebar-bg);
-        color: white;
-        padding: 30px 20px;
-        flex-shrink: 0;
-        border-right: 1px solid #1f1f1f;
-    }
-
-    /* Sidebar Styling[cite: 1] */
-    .sidebar h2 {
-        margin: 0;
-        font-size: 22px;
-    }
-
-    .sidebar .version {
-        font-size: 11px;
-        color: #888;
-        margin-bottom: 40px;
-        display: block;
-    }
-
-    .menu-label {
-        color: #595959;
-        font-size: 12px;
-        margin: 25px 0 10px 0;
-        font-weight: bold;
-    }
-
-    /* Logged-in User Display Style */
-    .logged-in-user {
-        background-color: rgba(255, 255, 255, 0.05);
-        padding: 12px;
-        border-radius: 6px;
-        margin-bottom: 20px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .logged-in-user span {
-        display: block;
-        font-size: 10px;
-        color: #888;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-
-    .logged-in-user strong {
-        display: block;
-        font-size: 14px;
-        color: #3498db; /* Consistent with nav_master highlight color[cite: 2] */
-        margin-top: 2px;
-    }
-
-    .sidebar ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-
-    .sidebar li {
-        margin-bottom: 5px;
-    }
-
-    .sidebar a {
-        color: #a6adb4;
-        text-decoration: none;
-        display: block;
-        padding: 10px;
-        border-radius: 4px;
-        transition: 0.3s;
-    }
-
-    .sidebar li.active a {
-        background-color: rgba(255, 255, 255, 0.1);
-        color: white;
-    }
-
-    .sidebar a:hover {
-        background-color: rgba(255, 255, 255, 0.05);
-    }
-</style>
-
 <div class="sidebar">
-    <div class="sidebar-header">
-        <h2>BalikGamit</h2>
-        <span class="version">BY ASYNC V.1.0</span>
+    <div class="sidebar-brand">
+        <a href="home.php" class="logo-link">
+            <img src="../assets/images/BalikGamitLogo2.png" alt="BalikGamit Logo" class="sidebar-logo">
+        </a>
     </div>
 
-    <p class="menu-label">MAIN</p>
-    <ul>
-        <li class="<?= ($current_page == 'index.php' || $current_page == 'dashboard.php') ? 'active' : ''; ?>"><a
-                href="/Balikgamit/student/dashboard.php">Dashboard</a></li>
-        <li class="<?= ($current_page == 'view-item.php') ? 'active' : ''; ?>"><a href="view-item.php">View an item</a>
+    <div class="sidebar-section-label">MAIN</div>
+    <ul class="sidebar-menu">
+        <li class="<?= $current_page === 'home.php' ? 'active' : '' ?>">
+            <a href="home.php">
+                <i class="fa-solid fa-house sidebar-icon"></i>
+                Home
+            </a>
         </li>
-        <li class="<?= ($current_page == 'reported.php') ? 'active' : ''; ?>"><a href="reported.php">Reported Items</a>
+        <li class="<?= $current_page === 'report_item.php' ? 'active' : '' ?>">
+            <a href="report_item.php">
+                <i class="fa-solid fa-circle-plus sidebar-icon"></i>
+                Report Item
+            </a>
         </li>
+<<<<<<< HEAD
         <li class="<?= ($current_page == 'report.php') ? 'active' : ''; ?>"><a href="report.php">Report Item</a></li>
         <li class="<?= ($current_page == 'my-reports.php') ? 'active' : ''; ?>"><a href="my-reports.php">My Reports</a>
         </li>
@@ -160,7 +65,34 @@ if (isset($_SESSION['user_id']) && isset($conn)) {
         <li>
             <a href="#" onclick="openLogoutModal(); return false;">
                 Logout
+=======
+        <li class="<?= $current_page === 'my_reports.php' ? 'active' : '' ?>">
+            <a href="my_reports.php">
+                <i class="fa-solid fa-file-lines sidebar-icon"></i>
+                My Reports
+>>>>>>> 9d6fa3580ad657b9ecbbf8b63d56fb88af120e0b
             </a>
         </li>
     </ul>
+
+    <div class="sidebar-section-label">ACCOUNT</div>
+    <ul class="sidebar-menu">
+        <li class="<?= $current_page === 'settings.php' ? 'active' : '' ?>">
+            <a href="settings.php">
+                <i class="fa-solid fa-gear sidebar-icon"></i>
+                Settings
+            </a>
+        </li>
+    </ul>
+
+    <div class="sidebar-footer">
+        <ul class="sidebar-menu">
+            <li>
+                <a href="../logout.php" class="logout-link">
+                    <i class="fa-solid fa-right-from-bracket sidebar-icon"></i>
+                    Log out
+                </a>
+            </li>
+        </ul>
+    </div>
 </div>
