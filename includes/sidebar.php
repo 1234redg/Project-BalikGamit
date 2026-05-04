@@ -66,7 +66,7 @@ if (isset($_SESSION['user_id']) && isset($conn)) {
     <div class="sidebar-footer">
         <ul class="sidebar-menu">
             <li>
-                <a href="../logout.php" class="logout-link">
+                <a href="../login.php" class="logout-link">
                     <i class="fa-solid fa-right-from-bracket sidebar-icon"></i>
                     Log out
                 </a>

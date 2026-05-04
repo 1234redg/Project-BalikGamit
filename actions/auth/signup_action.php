@@ -17,7 +17,9 @@ $role = trim($_POST['role'] ?? 'Student');
 $phone = trim($_POST['phone'] ?? '');
 
 function generate_username($first, $last) {
-    $base = strtolower(preg_replace('/[^a-z0-9]/', '', $first . $last));
+    // Take only the first word of the first name to avoid issues with middle names
+    $firstWord = explode(' ', trim($first))[0];
+    $base = strtolower(preg_replace('/[^a-z0-9]/', '', $firstWord . $last));
     if (empty($base)) {
         $base = 'user';
     }

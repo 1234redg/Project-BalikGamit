@@ -19,7 +19,12 @@ if (isset($_SESSION['user_id'])) {
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
     if ($user = mysqli_fetch_assoc($result)) {
-        $displayName = htmlspecialchars($user['First_Name'] ?: $user['Username']);
+        $firstName = htmlspecialchars($user['First_Name'] ?? '');
+        $lastName = htmlspecialchars($user['Last_Name'] ?? '');
+        $displayName = trim($firstName . ' ' . $lastName);
+        if (empty($displayName)) {
+            $displayName = htmlspecialchars($user['Username']);
+        }
         $initial = strtoupper(substr($displayName, 0, 1));
     }
 }
@@ -390,7 +395,7 @@ while ($cat = mysqli_fetch_assoc($catResult)) {
         </div>
 
         <!-- RESULT COUNT -->
-        <p class="result-count" id="resultCount" style="display:none;">
+        <p class="result-count" id="resultCount" style=" font-size: 16px; margin-bottom: 16px;">
             Showing <strong id="resultNum">0</strong> item(s)
         </p>
 
