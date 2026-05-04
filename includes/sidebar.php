@@ -52,6 +52,7 @@ if (isset($_SESSION['user_id']) && isset($conn)) {
 
             </a>
         </li>
+        
     </ul>
 
     <div class="sidebar-section-label">ACCOUNT</div>

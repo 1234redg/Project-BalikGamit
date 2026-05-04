@@ -1,8 +1,36 @@
-<?php 
-require '../config/db.php'; 
+<?php
+require '../config/db.php';
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+
+if (!isset($_SESSION['user_id'])) {
+    header('Location: ../login.php');
+    exit();
+}
+
+// --- START OF FIX: Fetch consistent display name ---
+$displayName = 'Guest';
+$initial = 'G';
+$userId = $_SESSION['user_id'];
+
+$query = 'SELECT First_Name, Last_Name, Username FROM User_Table WHERE User_ID = ?';
+$stmt = mysqli_prepare($conn, $query);
+mysqli_stmt_bind_param($stmt, 'i', $userId);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
+
+if ($user = mysqli_fetch_assoc($result)) {
+    $firstName = htmlspecialchars($user['First_Name'] ?? '');
+    $lastName = htmlspecialchars($user['Last_Name'] ?? '');
+    $displayName = trim($firstName . ' ' . $lastName);
+
+    if (empty($displayName)) {
+        $displayName = htmlspecialchars($user['Username']);
+    }
+    $initial = strtoupper(substr($displayName, 0, 1));
+}
+// --- END OF FIX ---
 
 $message = "";
 if (isset($_SESSION['msg'])) {
@@ -18,21 +46,22 @@ if (isset($_SESSION['msg'])) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Report Item - BalikGamit</title>
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    
+
     <style>
         /* Within-file CSS to match image_561b82.jpg */
-        
+
         .report-card {
             background: #fff;
             border-radius: 15px;
             padding: 30px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
             margin-top: 20px;
         }
 
@@ -61,13 +90,13 @@ if (isset($_SESSION['msg'])) {
             transition: 0.3s;
         }
 
-        .report-status-option input[type="radio"]:checked + .report-status-chip--lost {
+        .report-status-option input[type="radio"]:checked+.report-status-chip--lost {
             background: #fee2e2;
             color: #ef4444;
             border-color: #fca5a5;
         }
 
-        .report-status-option input[type="radio"]:checked + .report-status-chip--found {
+        .report-status-option input[type="radio"]:checked+.report-status-chip--found {
             background: #f3f4f6;
             color: #374151;
             border-color: #d1d5db;
@@ -88,7 +117,8 @@ if (isset($_SESSION['msg'])) {
             display: block;
             font-size: 11px;
             font-weight: 800;
-            color: #435ebe; /* Blue accent from labels */
+            color: #435ebe;
+            /* Blue accent from labels */
             text-transform: uppercase;
             margin-bottom: 8px;
         }
@@ -107,7 +137,7 @@ if (isset($_SESSION['msg'])) {
             font-size: 14px;
         }
 
-        .report-input-wrap input, 
+        .report-input-wrap input,
         .report-input-wrap select,
         .report-form-group textarea {
             width: 100%;
@@ -142,9 +172,18 @@ if (isset($_SESSION['msg'])) {
             text-transform: uppercase;
         }
 
-        .report-file-drop i { font-size: 24px; }
-        .report-file-drop input { display: none; }
-        .report-file-drop__hint { color: #8a94ad; font-weight: 400; }
+        .report-file-drop i {
+            font-size: 24px;
+        }
+
+        .report-file-drop input {
+            display: none;
+        }
+
+        .report-file-drop__hint {
+            color: #8a94ad;
+            font-weight: 400;
+        }
 
         .report-file-name {
             display: block;
@@ -188,13 +227,18 @@ if (isset($_SESSION['msg'])) {
             color: #fff;
         }
 
-        .report-btn:hover { opacity: 0.9; }
+        .report-btn:hover {
+            opacity: 0.9;
+        }
 
         @media (max-width: 768px) {
-            .report-form-grid { grid-template-columns: 1fr; }
+            .report-form-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
+
 <body>
     <div class="app-container">
         <?php include_once '../includes/sidebar.php'; ?>
@@ -209,11 +253,11 @@ if (isset($_SESSION['msg'])) {
                     <p>Fill in the details below to list a lost or found item on the BalikGamit board.</p>
                 </div>
                 <div class="dashboard-user-card">
-                    <div class="user-avatar-circle">
-                        <?php echo isset($_SESSION['username']) ? strtoupper(substr($_SESSION['username'], 0, 1)) : 'U'; ?>
-                    </div>
+                    <!-- Updated to use $initial -->
+                    <div class="user-avatar-circle"><?php echo $initial; ?></div>
                     <div class="user-card-info">
-                        <span class="user-card-name"><?php echo isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : 'User'; ?></span>
+                        <!-- Updated to use $displayName -->
+                        <span class="user-card-name"><?php echo $displayName; ?></span>
                         <span class="user-card-status">● Online</span>
                     </div>
                 </div>
@@ -246,7 +290,8 @@ if (isset($_SESSION['msg'])) {
                         </label>
                     </div>
 
-                    <form action="../actions/report/add_report.php" method="POST" enctype="multipart/form-data" class="report-form">
+                    <form action="../actions/report/add_report.php" method="POST" enctype="multipart/form-data"
+                        class="report-form">
                         <!-- Hidden status field synced with toggle above -->
                         <input type="hidden" name="status" id="statusInput" value="Lost">
 
@@ -258,7 +303,8 @@ if (isset($_SESSION['msg'])) {
                                     <label for="itemName">Item Name</label>
                                     <div class="report-input-wrap">
                                         <i class="fa-solid fa-tag"></i>
-                                        <input type="text" id="itemName" name="name" placeholder="e.g. Black Wallet" required>
+                                        <input type="text" id="itemName" name="name" placeholder="e.g. Black Wallet"
+                                            required>
                                     </div>
                                 </div>
 
@@ -282,7 +328,8 @@ if (isset($_SESSION['msg'])) {
                                     <label for="itemLoc">Location Last Seen</label>
                                     <div class="report-input-wrap">
                                         <i class="fa-solid fa-location-dot"></i>
-                                        <input type="text" id="itemLoc" name="loc" placeholder="Specific building or room" required>
+                                        <input type="text" id="itemLoc" name="loc" placeholder="Specific building or room"
+                                            required>
                                     </div>
                                 </div>
 
@@ -301,7 +348,8 @@ if (isset($_SESSION['msg'])) {
 
                                 <div class="report-form-group report-form-group--full">
                                     <label for="itemDesc">Description</label>
-                                    <textarea id="itemDesc" name="desc" placeholder="Describe the item in as much detail as possible — color, brand, markings…"></textarea>
+                                    <textarea id="itemDesc" name="desc"
+                                        placeholder="Describe the item in as much detail as possible — color, brand, markings…"></textarea>
                                 </div>
 
                                 <div class="report-form-group report-form-group--full">
@@ -349,4 +397,5 @@ if (isset($_SESSION['msg'])) {
         });
     </script>
 </body>
+
 </html>
