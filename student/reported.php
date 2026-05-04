@@ -45,12 +45,30 @@ $result = mysqli_query($conn, $query);
 
         .item-card { background: #1a1a1a; border: 1px solid #333; border-radius: 8px; overflow: hidden; }
 
-        .item-image-wrapper { width: 100%; height: 180px; background: #252525; overflow: hidden; }
+        .item-image-wrapper { 
+            width: 100%; 
+            height: 180px; 
+            background: #222; 
+            overflow: hidden; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
         .item-image-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+        
+        /* Fixed Placeholder Styling */
         .item-image-placeholder {
-            width: 100%; height: 100%; display: flex;
-            align-items: center; justify-content: center;
-            color: #555; font-size: 0.85rem;
+            width: 100%; 
+            height: 100%; 
+            display: flex;
+            align-items: center; 
+            justify-content: center;
+            color: #444; 
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
         }
 
         .item-info { padding: 15px; }
@@ -81,8 +99,14 @@ $result = mysqli_query($conn, $query);
                     <?php while($row = mysqli_fetch_assoc($result)): ?>
                         <div class="item-card">
                             <div class="item-image-wrapper">
-                                <?php if (!empty($row['Item_Image'])): ?>
-                                    <img src="/balikgamit/<?php echo htmlspecialchars($row['Item_Image']); ?>" alt="Item Image">
+                                <?php 
+                                    // Construct the physical path to check if file exists
+                                    $image_path = $row['Item_Image'];
+                                    $full_path = $_SERVER['DOCUMENT_ROOT'] . "/balikgamit/" . $image_path;
+
+                                    if (!empty($image_path) && file_exists($full_path)): 
+                                ?>
+                                    <img src="/balikgamit/<?php echo htmlspecialchars($image_path); ?>" alt="Item Image">
                                 <?php else: ?>
                                     <div class="item-image-placeholder">No Image Available</div>
                                 <?php endif; ?>
