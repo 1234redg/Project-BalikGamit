@@ -10,7 +10,7 @@ $email_val = isset($_GET['email']) ? htmlspecialchars($_GET['email']) : '';
 $phone_val = isset($_GET['phone']) ? htmlspecialchars($_GET['phone']) : '';
 
 if ($success === '1') {
-    $message = '<p style="color: #16a34a; font-weight: 600; margin-bottom: 16px;">Account created successfully. <a href="login.php" style="color: #2563eb; text-decoration: underline;">Click here to login</a>.</p>';
+    $message = '<p style="color: #16a34a; font-weight: 600; margin-bottom: 16px;">Account created successfully. Redirecting...</p>';
 } elseif (!empty($_GET['message'])) {
     $message = '<p style="color: #dc2626; font-weight: 600; margin-bottom: 16px;">' . htmlspecialchars($_GET['message']) . '</p>';
 }
@@ -21,9 +21,36 @@ if ($success === '1') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up - BalikGamit</title>
+    
+    <!-- SweetAlert2 Library -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     <link rel="stylesheet" href="assets/css/style.css">
+    
+    <!-- reCAPTCHA API -->
     <script src="https://www.google.com/recaptcha/api.js?onload=renderRecaptcha&render=explicit" async defer></script>
-    <script src="assets/js/login.js?v=1.3" defer></script>
+    <script src="assets/js/login.js?v=1.5" defer></script>
+
+    <style>
+        /* Custom Theme for SweetAlert to match BalikGamit UI */
+        .balikgamit-popup {
+            border-radius: 16px !important;
+            font-family: 'Poppins', sans-serif !important;
+            padding: 2rem !important;
+        }
+        .balikgamit-title {
+            color: #1e293b !important;
+            font-size: 1.5rem !important;
+            font-weight: 700 !important;
+        }
+        .balikgamit-confirm-btn {
+            background-color: #2563eb !important; /* Your Theme Blue */
+            padding: 12px 32px !important;
+            font-weight: 600 !important;
+            border-radius: 10px !important;
+            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2) !important;
+        }
+    </style>
 </head>
 <body class="signup-page">
     <div class="container">
@@ -87,5 +114,33 @@ if ($success === '1') {
             </form>
         </div>
     </div>
+
+    <!-- Themed Success Popup and Redirect to Student Home -->
+    <?php if ($success === '1'): ?>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                title: 'Registration Successful!',
+                text: 'Welcome to the community. Redirecting you to your home page...',
+                icon: 'success',
+                iconColor: '#2563eb',
+                showConfirmButton: true,
+                confirmButtonText: 'Enter Home',
+                confirmButtonColor: '#2563eb',
+                customClass: {
+                    popup: 'balikgamit-popup',
+                    title: 'balikgamit-title',
+                    confirmButton: 'balikgamit-confirm-btn'
+                },
+                allowOutsideClick: false,
+                timer: 3500,
+                timerProgressBar: true
+            }).then((result) => {
+                // Path adjusted to your student/home.php location
+                window.location.href = 'student/home.php'; 
+            });
+        });
+    </script>
+    <?php endif; ?>
 </body>
-</html>
+</html> 

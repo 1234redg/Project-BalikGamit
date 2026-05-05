@@ -396,6 +396,8 @@ if (isset($_SESSION['msg'])) {
             document.getElementById('fileName').textContent = name;
         });
     </script>
+
+    <?php include_once '../logout-modal.php'; ?>
 </body>
 
 </html>
