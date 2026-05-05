@@ -21,7 +21,7 @@ if ($report_id === 0 || $item_id === 0) {
     exit();
 }
 
-// Verify this report belongs to the logged-in user
+// Verify this report belongs to the logged-in user[cite: 4]
 $check = mysqli_prepare($conn, "SELECT r.Report_ID FROM reports_table r WHERE r.Report_ID = ? AND r.User_ID = ?");
 mysqli_stmt_bind_param($check, "ii", $report_id, $user_id);
 mysqli_stmt_execute($check);
@@ -48,10 +48,11 @@ if ($name === '' || $status === '' || $cat_id === 0 || $loc === '' || $date === 
     exit();
 }
 
-// Handle optional photo upload
+// Handle optional photo upload[cite: 4]
 $newImage = null;
 if (!empty($_FILES['item_photo']['name'])) {
-    $uploadDir  = '../../assets/images/';
+    // FIX 1: Change physical upload directory to root uploads folder[cite: 3]
+    $uploadDir  = '../../uploads/'; 
     $ext        = strtolower(pathinfo($_FILES['item_photo']['name'], PATHINFO_EXTENSION));
     $allowed    = ['jpg', 'jpeg', 'png', 'webp', 'avif'];
 
@@ -64,14 +65,15 @@ if (!empty($_FILES['item_photo']['name'])) {
 
     $newFilename = time() . '_' . basename($_FILES['item_photo']['name']);
     if (move_uploaded_file($_FILES['item_photo']['tmp_name'], $uploadDir . $newFilename)) {
-        $newImage = $newFilename;
+        // FIX 2: Prepend 'uploads/' to the filename for database storage[cite: 3]
+        $newImage = 'uploads/' . $newFilename;
     }
 }
 
 mysqli_begin_transaction($conn);
 
 try {
-    // Update item_table
+    // Update item_table[cite: 4]
     if ($newImage) {
         $itemStmt = mysqli_prepare($conn,
             "UPDATE item_table SET Item_Name=?, Item_Status=?, Category_ID=?, Item_Description=?, Item_Image=? WHERE Item_ID=?"
@@ -85,7 +87,7 @@ try {
     }
     mysqli_stmt_execute($itemStmt);
 
-    // Update reports_table
+    // Update reports_table[cite: 4]
     $repStmt = mysqli_prepare($conn,
         "UPDATE reports_table SET Location=?, Date_filed=? WHERE Report_ID=?"
     );

@@ -326,21 +326,7 @@ while ($cat = mysqli_fetch_assoc($catResult)) {
         .toast-success i { color: #4ade80; }
         .toast-error   i { color: #f87171; }
 
-        /* Report Item button in filter row */
-        .report-item-btn {
-            text-decoration: none;
-            background: var(--primary);
-            color: #fff !important;
-            border-color: var(--primary);
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .report-item-btn:hover {
-            background: var(--primary-hover) !important;
-            border-color: var(--primary-hover) !important;
-            color: #fff !important;
-        }
+
     </style>
 </head>
 <body>
@@ -376,9 +362,7 @@ while ($cat = mysqli_fetch_assoc($catResult)) {
                     <button type="button" class="status-btn active" data-filter="all">All</button>
                     <button type="button" class="status-btn" data-filter="Lost">Lost</button>
                     <button type="button" class="status-btn" data-filter="Found">Found</button>
-                    <a href="report_item.php" class="status-btn report-item-btn">
-                        <i class="fa-solid fa-circle-plus"></i> Report Item
-                    </a>
+
                 </div>
             </div>
             <div class="category-panel">
@@ -392,6 +376,10 @@ while ($cat = mysqli_fetch_assoc($catResult)) {
                     <?php endforeach; ?>
                 </select>
             </div>
+
+            <a href="report_item.php" class="myreports-new-btn">
+                <i class="fa-solid fa-plus"></i> New Report
+            </a>
         </div>
 
         <!-- RESULT COUNT -->
