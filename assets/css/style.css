@@ -1775,3 +1775,190 @@ body.modal-open {
         justify-content: center;
     }
 }
+
+/* ============================================
+   SUBMISSION SUCCESS PAGE & SMART MATCH
+   ============================================ */
+
+/* Success Banner */
+.success-banner {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    background: white;
+    border: 0.5px solid #bbf7d0;
+    border-left: 4px solid var(--green-text);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+}
+
+.success-banner__icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--green-bg);
+    color: var(--green-text);
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.success-banner__text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 200px;
+}
+
+.success-banner__text strong {
+    font-size: 15px;
+    color: var(--text-primary);
+}
+
+.success-banner__text span {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.success-banner__actions {
+    display: flex;
+    gap: 10px;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+}
+
+/* Smart Match Section */
+.smart-match-section {
+    background: white;
+    border: 0.5px solid var(--border);
+    border-radius: 16px;
+    padding: 28px 32px 32px;
+}
+
+.smart-match-header {
+    margin-bottom: 24px;
+}
+
+.smart-match-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #ede9fe;
+    color: #7c3aed;
+    border-radius: 999px;
+    padding: 4px 14px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 10px;
+}
+
+.smart-match-header h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.smart-match-header p {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+/* Loading spinner */
+.smart-match-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    padding: 48px 20px;
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+.smart-match-spinner {
+    width: 38px;
+    height: 38px;
+    border: 3px solid var(--border);
+    border-top-color: #7c3aed;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Empty / error state */
+.smart-match-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 48px 20px;
+    color: var(--text-muted);
+    text-align: center;
+}
+
+.smart-match-empty i {
+    font-size: 34px;
+    margin-bottom: 4px;
+}
+
+.smart-match-empty p {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.smart-match-empty span {
+    font-size: 13px;
+}
+
+/* AI reason chip on card */
+.smart-match-reason {
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+    margin-top: 8px;
+    background: #f5f3ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 12px;
+    color: #6d28d9;
+    line-height: 1.5;
+}
+
+.smart-match-reason i {
+    font-size: 11px;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .success-banner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .success-banner__actions {
+        width: 100%;
+    }
+
+    .success-banner__actions .report-btn {
+        flex: 1;
+        justify-content: center;
+    }
+
+    .smart-match-section {
+        padding: 20px 16px 24px;
+    }
+}

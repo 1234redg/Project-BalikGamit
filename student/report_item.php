@@ -190,6 +190,24 @@ if (isset($_SESSION['msg'])) {
 
         .report-btn:hover { opacity: 0.9; }
 
+        /* Validation Error Message */
+        .report-validation-error {
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-bottom: 20px;
+            color: #b91c1c;
+            font-size: 14px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .report-validation-error.show { display: flex; }
+
+        .report-validation-error i { font-size: 16px; flex-shrink: 0; }
+
         @media (max-width: 768px) {
             .report-form-grid { grid-template-columns: 1fr; }
         }
@@ -230,6 +248,12 @@ if (isset($_SESSION['msg'])) {
                 <?php echo $message; ?>
 
                 <div class="report-card">
+                    <!-- Validation Error Alert -->
+                    <div id="validationError" class="report-validation-error">
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                        <span>Please fill in all required fields.</span>
+                    </div>
+
                     <!-- Status Toggle -->
                     <div class="report-status-toggle">
                         <label class="report-status-option">
@@ -246,7 +270,7 @@ if (isset($_SESSION['msg'])) {
                         </label>
                     </div>
 
-                    <form action="../actions/report/add_report.php" method="POST" enctype="multipart/form-data" class="report-form">
+                    <form action="../actions/report/add_report.php" method="POST" enctype="multipart/form-data" class="report-form" id="reportForm">
                         <!-- Hidden status field synced with toggle above -->
                         <input type="hidden" name="status" id="statusInput" value="Lost">
 
@@ -334,19 +358,107 @@ if (isset($_SESSION['msg'])) {
         </div>
     </div>
 
-    <script>
-        // Sync the visual toggle with the hidden input
-        document.querySelectorAll('input[name="status_preview"]').forEach(radio => {
-            radio.addEventListener('change', function () {
-                document.getElementById('statusInput').value = this.value;
-            });
-        });
+<script>
+        
+    const reportForm = document.getElementById('reportForm');
+    const validationError = document.getElementById('validationError');
+    const validationMsg = validationError.querySelector('span');
+    const photoInput = document.getElementById('itemPhoto');
+    const statusInputHidden = document.getElementById('statusInput');
 
-        // Show selected filename
-        document.getElementById('itemPhoto')?.addEventListener('change', function () {
-            const name = this.files[0] ? this.files[0].name : 'No file chosen';
-            document.getElementById('fileName').textContent = name;
+    const requiredFields = [
+        { id: 'itemName', name: 'Item Name' },
+        { id: 'catId',    name: 'Category' },
+        { id: 'itemLoc',  name: 'Location Last Seen' },
+        { id: 'itemDate', name: 'Date' },
+        { id: 'itemDesc', name: 'Description' }
+    ];
+
+    function validateForm() {
+        // Check all required text fields first
+        for (const field of requiredFields) {
+            const element = document.getElementById(field.id);
+            const value = element?.value?.trim();
+            if (!value) {
+                showValidationError(`Please fill in the <strong>${field.name}</strong> field.`);
+                return false;
+            }
+        }
+
+        // Check photo upload — required for both Lost and Found
+        if (!photoInput.files || photoInput.files.length === 0) {
+            const currentStatus = statusInputHidden.value;
+
+            if (currentStatus === 'Found') {
+                showValidationError(
+                    'A photo is required for <strong>Found</strong> items. Please upload a clear photo of the item you found.'
+                );
+            } else {
+                showValidationError(
+                    'Please upload a photo for your <strong>Lost</strong> item. A similar or actual photo helps others identify it faster.'
+                );
+            }
+            return false;
+        }
+
+        // Check file size max 5MB
+        const file = photoInput.files[0];
+        const maxSize = 5 * 1024 * 1024;
+        if (file.size > maxSize) {
+            showValidationError('The uploaded file is too large. Maximum allowed size is <strong>5 MB</strong>.');
+            return false;
+        }
+
+        // Check file type
+        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+        if (!allowedTypes.includes(file.type)) {
+            showValidationError('Invalid file type. Please upload a <strong>JPG, PNG, or WEBP</strong> image.');
+            return false;
+        }
+
+        return true;
+    }
+
+    function showValidationError(message) {
+        validationMsg.innerHTML = message;
+        validationError.classList.add('show');
+        validationError.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function hideValidationError() {
+        validationError.classList.remove('show');
+    }
+
+    reportForm?.addEventListener('submit', function (e) {
+        if (!validateForm()) {
+            e.preventDefault();
+        } else {
+            hideValidationError();
+        }
+    });
+
+    // Hide error when user starts typing or changes any field
+    requiredFields.forEach(field => {
+        const element = document.getElementById(field.id);
+        if (element) {
+            element.addEventListener('input', hideValidationError);
+            element.addEventListener('change', hideValidationError);
+        }
+    });
+
+    // Hide error when photo is selected
+    photoInput?.addEventListener('change', function () {
+        const name = this.files[0] ? this.files[0].name : 'No file chosen';
+        document.getElementById('fileName').textContent = name;
+        hideValidationError();
+    });
+
+    // Sync the visual toggle with the hidden input
+    document.querySelectorAll('input[name="status_preview"]').forEach(radio => {
+        radio.addEventListener('change', function () {
+            statusInputHidden.value = this.value;
         });
-    </script>
+    });
+</script>
 </body>
 </html>
