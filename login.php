@@ -1,16 +1,24 @@
 <?php
 session_start();
 
-$error = isset($_GET['error']) ? $_GET['error'] : "";
+// Handle URL parameters for feedback
+$error = $_GET['error'] ?? "";
 $message = "";
 
 if ($error == "invalid") {
-    $message = "<p class='error-msg'>Invalid email/username or password.</p>";
+    $message = '<p style="color: #dc2626; font-weight: 600; margin-bottom: 16px;">Invalid email/username or password.</p>';
 } elseif ($error == "empty") {
-    $message = "<p class='error-msg'>Please fill in all fields.</p>";
+    $message = '<p style="color: #dc2626; font-weight: 600; margin-bottom: 16px;">Please fill in all fields.</p>';
 } elseif ($error == "recaptcha") {
-    $message = "<p class='error-msg'>reCAPTCHA verification failed. Please try again.</p>";
+    $message = '<p style="color: #dc2626; font-weight: 600; margin-bottom: 16px;">reCAPTCHA verification failed. Please try again.</p>';
 }
+
+// CARDINAL RULE: Dynamic Path Logic
+$currentDir = basename(dirname($_SERVER['PHP_SELF']));
+$isSubfolder = ($currentDir === 'student' || $currentDir === 'admin');
+
+// Adjust paths based on folder depth
+$prefix = $isSubfolder ? '../' : '';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -18,20 +26,23 @@ if ($error == "invalid") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - BalikGamit</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+    
+    <!-- Google Identity Services -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 
-    <!--
-        FIX: reCAPTCHA loads first, THEN calls renderRecaptcha()
-        which is defined in login.js — async defer prevents render blocking
-    -->
+    <!-- Dynamic Assets -->
+    <link rel="stylesheet" href="<?= $prefix ?>assets/css/style.css">
+    
+    <!-- reCAPTCHA API -->
     <script src="https://www.google.com/recaptcha/api.js?onload=renderRecaptcha&render=explicit" async defer></script>
-    <script src="assets/js/login.js" defer></script>
+    <script src="<?= $prefix ?>assets/js/login.js" defer></script>
 </head>
 <body>
     <div class="container">
+        <!-- Left Panel: Branded Hero (Matches Signup) -->
         <div class="left-panel">
             <div class="logo">
-                <img src="assets/images/BalikGamitLogo1.png" alt="BalikGamit Logo" width="40" height="40">
+                <img src="<?= $prefix ?>assets/images/BalikGamitLogo1.png" alt="BalikGamit Logo" width="40" height="40">
                 <div class="logo-text">
                     <div class="title">BalikGamit</div>
                     <div class="subtitle">BY ASYNC V.1.0</div>
@@ -39,28 +50,29 @@ if ($error == "invalid") {
             </div>
             <div class="hero">
                 <h1>Reuniting lost items with their owners.</h1>
-                <p>A centralized lost and found platform for Bukidnon State University.
-                Submit reports, track item status, and claim your belongings
-                seamlessly through our digital system.</p>
+                <p>A centralized lost and found platform for Bukidnon State University.</p>
             </div>
         </div>
 
+        <!-- Right Panel: Login Action -->
         <div class="right-panel">
-            <form class="login-form" id="loginForm" action="actions/auth/login_action.php" method="post">
+            <form class="login-form" id="loginForm" action="<?= $prefix ?>actions/auth/login_action.php" method="post" autocomplete="off">
                 <h1>Login to BalikGamit</h1>
                 <p>Please log in to your account to continue.</p>
 
-                <?php echo $message; ?>
+                <!-- Status Message -->
+                <?= $message ?>
 
                 <div class="form-group">
                     <label for="identifier">EMAIL / USERNAME</label>
-                    <input type="text" id="identifier" name="identifier"
-                           placeholder="Enter your email or username" required>
+                    <input type="text" id="identifier" name="identifier" 
+                           placeholder="Enter your email or username" 
+                           autocomplete="off" required>
                 </div>
 
                 <div class="form-group">
                     <label for="pass">PASSWORD</label>
-                    <input type="password" id="pass" name="pass"
+                    <input type="password" id="pass" name="pass" 
                            placeholder="Enter your password" required>
                 </div>
 
@@ -69,21 +81,43 @@ if ($error == "invalid") {
                         <input type="checkbox" id="remember" name="remember">
                         <label for="remember">Remember me</label>
                     </div>
-                    <a href="forgot-password.php" class="forgot-password">Forgot Password?</a>
+                    <a href="<?= $prefix ?>forgot-password.php" class="forgot-password">Forgot Password?</a>
                 </div>
 
-                <button id="submitBtn" type="button" class="login-btn" onclick="handleSubmit()">
-                    Login
-                </button>
-
-                <!--
-                    This div is where the INVISIBLE reCAPTCHA widget mounts.
-                    It has zero visible size — no checkbox, no green tick ever shows here.
-                    The spinner feedback is handled entirely by the button CSS.
-                -->
+                <!-- Invisible reCAPTCHA container -->
                 <div id="recaptcha-container"></div>
+                
+                <button id="submitBtn" type="button" class="login-btn" onclick="handleSubmit()">Login</button>
 
-                <p class="signup-link">Don't have an Account? <a href="signup.php">Sign up here</a></p>
+                <!-- OR Divider with Spacing Fix -->
+                <div style="display: flex; align-items: center; margin: 15px 0;">
+                    <div style="flex: 1; height: 1px; background: #e2e8f0;"></div>
+                    <span style="margin: 0 10px; color: #94a3b8; font-size: 0.8rem; font-weight: 500; font-family: 'Poppins', sans-serif;">OR</span>
+                    <div style="flex: 1; height: 1px; background: #e2e8f0;"></div>
+                </div>
+
+                <!-- Google Identity Config -->
+                <div id="g_id_onload"
+                     data-client_id="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
+                     data-context="signin"
+                     data-ux_mode="popup"
+                     data-login_uri="<?= $prefix ?>actions/auth/google_auth.php"
+                     data-auto_prompt="false">
+                </div>
+
+                <!-- Google Button centered via Flex -->
+                <div style="display: flex; justify-content: center; width: 100%; margin-bottom: 15px;">
+                    <div class="g_id_signin" 
+                         data-type="standard" 
+                         data-shape="rectangular" 
+                         data-theme="outline" 
+                         data-text="signin_with" 
+                         data-size="large" 
+                         data-width="395">
+                    </div>
+                </div>
+
+                <p class="signup-link">Don't have an Account? <a href="<?= $prefix ?>signup.php">Sign up here</a></p>
             </form>
         </div>
     </div>

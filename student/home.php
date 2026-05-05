@@ -789,5 +789,6 @@ $(document).on('keydown', e => { if (e.key === 'Escape') closeModal(); });
 $(document).ready(loadCards);
 </script>
 
+<?php include_once '../logout-modal.php'; ?>
 </body>
 </html>

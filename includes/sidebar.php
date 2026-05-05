@@ -4,11 +4,6 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 $current_page = basename($_SERVER['PHP_SELF']);
 
-// Logic from nav_master to fetch the user's first name[cite: 2]
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
 $firstName = "Guest";
 
 // Ensure $conn is available from your db.php or config.php
@@ -49,10 +44,8 @@ if (isset($_SESSION['user_id']) && isset($conn)) {
             <a href="my_reports.php">
                 <i class="fa-solid fa-file-lines sidebar-icon"></i>
                 My Reports
-
             </a>
         </li>
-        
     </ul>
 
     <div class="sidebar-section-label">ACCOUNT</div>
@@ -68,7 +61,7 @@ if (isset($_SESSION['user_id']) && isset($conn)) {
     <div class="sidebar-footer">
         <ul class="sidebar-menu">
             <li>
-                <a href="../login.php" class="logout-link">
+                <a href="javascript:void(0)" onclick="openLogoutModal()" class="logout-link">
                     <i class="fa-solid fa-right-from-bracket sidebar-icon"></i>
                     Log out
                 </a>
