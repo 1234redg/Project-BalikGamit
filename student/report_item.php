@@ -510,8 +510,14 @@ if (isset($_SESSION['msg'])) {
         radio.addEventListener('change', function () {
             statusInputHidden.value = this.value;
         });
+<<<<<<< HEAD
     });
 </script>
+=======
+    </script>
+
+    <?php include_once '../logout-modal.php'; ?>
+>>>>>>> 0710e50b77af390ae279575ba8fd6693649eecad
 </body>
 
 </html>

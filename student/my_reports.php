@@ -388,5 +388,7 @@ document.getElementById('edit_photo').addEventListener('change', function () {
     document.getElementById('editFileName').textContent = this.files[0] ? this.files[0].name : 'No file chosen';
 });
 </script>
+
+<?php include_once '../logout-modal.php'; ?>
 </body>
 </html>

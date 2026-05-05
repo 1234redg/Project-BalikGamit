@@ -4,6 +4,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 $current_page = basename($_SERVER['PHP_SELF']);
 
+
 // Logic from nav_master to fetch the user's first name
 $firstName = "Guest";
 
@@ -47,6 +48,7 @@ if (isset($_SESSION['user_id']) && isset($conn)) {
                 My Reports
             </a>
         </li>
+
         <!-- Added My Claims Link -->
         <li class="<?= $current_page === 'my_claims.php' ? 'active' : '' ?>">
             <a href="my_claims.php">
@@ -69,7 +71,7 @@ if (isset($_SESSION['user_id']) && isset($conn)) {
     <div class="sidebar-footer">
         <ul class="sidebar-menu">
             <li>
-                <a href="../login.php" class="logout-link">
+                <a href="javascript:void(0)" onclick="openLogoutModal()" class="logout-link">
                     <i class="fa-solid fa-right-from-bracket sidebar-icon"></i>
                     Log out
                 </a>
