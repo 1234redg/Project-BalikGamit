@@ -4,6 +4,8 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 $current_page = basename($_SERVER['PHP_SELF']);
 
+
+// Logic from nav_master to fetch the user's first name
 $firstName = "Guest";
 
 // Ensure $conn is available from your db.php or config.php
@@ -44,6 +46,14 @@ if (isset($_SESSION['user_id']) && isset($conn)) {
             <a href="my_reports.php">
                 <i class="fa-solid fa-file-lines sidebar-icon"></i>
                 My Reports
+            </a>
+        </li>
+
+        <!-- Added My Claims Link -->
+        <li class="<?= $current_page === 'my_claims.php' ? 'active' : '' ?>">
+            <a href="my_claims.php">
+                <i class="fa-solid fa-hand-holding-hand sidebar-icon"></i>
+                My Claims
             </a>
         </li>
     </ul>

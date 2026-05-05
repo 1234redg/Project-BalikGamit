@@ -23,7 +23,7 @@ $user_data   = mysqli_fetch_assoc(mysqli_stmt_get_result($user_stmt));
 $displayName = trim(($user_data['First_Name'] ?? '') . ' ' . ($user_data['Last_Name'] ?? ''));
 if (empty($displayName)) $displayName = 'Guest';
 
-// Flash messages
+// Flash messages[cite: 1]
 $flash = '';
 if (isset($_SESSION['msg'])) {
     if ($_SESSION['msg'] === 'updated') {
@@ -37,7 +37,7 @@ if (isset($_SESSION['msg'])) {
     unset($_SESSION['msg'], $_SESSION['error_details']);
 }
 
-// Build query
+// Build query[cite: 1]
 $where  = "WHERE r.User_ID = ?";
 $params = [$user_id];
 $types  = 'i';
@@ -74,7 +74,7 @@ mysqli_stmt_execute($stmt);
 $reports = mysqli_fetch_all(mysqli_stmt_get_result($stmt), MYSQLI_ASSOC);
 $total   = count($reports);
 
-// Categories for dropdowns
+// Categories for dropdowns[cite: 1]
 $catResult  = mysqli_query($conn, "SELECT * FROM category_table ORDER BY Category ASC");
 $categories = mysqli_fetch_all($catResult, MYSQLI_ASSOC);
 ?>
@@ -164,14 +164,18 @@ $categories = mysqli_fetch_all($catResult, MYSQLI_ASSOC);
             <div class="cards-grid">
                 <?php foreach ($reports as $row):
                     $statusClass = 'status-' . strtolower($row['Item_Status']);
+                    
+                    // FIXED IMAGE PATH LOGIC[cite: 3]
                     $imgPath = !empty($row['Item_Image'])
-                        ? '../assets/images/' . htmlspecialchars($row['Item_Image'])
+                        ? '../' . htmlspecialchars($row['Item_Image'])
                         : '../assets/images/placeholder.png';
+
                     $date = date('M d, Y', strtotime($row['Date_filed']));
                 ?>
                 <div class="item-card">
                     <div class="item-image">
                         <img src="<?= $imgPath ?>" alt="<?= htmlspecialchars($row['Item_Name']) ?>"
+                             style="width:100%; height:100%; object-fit:cover;"
                              onerror="this.src='../assets/images/placeholder.png'">
                     </div>
                     <div class="item-card-header">
