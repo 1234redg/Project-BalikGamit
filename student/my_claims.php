@@ -21,7 +21,7 @@ $user_data   = mysqli_fetch_assoc(mysqli_stmt_get_result($user_stmt));
 $displayName = trim(($user_data['First_Name'] ?? '') . ' ' . ($user_data['Last_Name'] ?? ''));
 if (empty($displayName)) $displayName = 'Guest';
 
-// Build query based on your table structure[cite: 1, 4]
+// Build query[cite: 1]
 $where  = "WHERE c.User_ID = ?";
 $params = [$user_id];
 $types  = 'i';
@@ -32,7 +32,7 @@ if ($search !== '') {
     $types   .= 's';
 }
 
-// JOIN logic: claims_table -> reports_table -> item_table[cite: 1, 4]
+// JOIN logic: claims_table -> reports_table -> item_table[cite: 1]
 $sql = "SELECT c.Claim_Request_ID, c.Claim_Status, c.Claim_Note,
                i.Item_Name, i.Item_Image, i.Item_Status as Original_Status,
                cat.Category,
@@ -58,6 +58,61 @@ $total  = count($claims);
     <title>My Claims - BalikGamit</title>
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        /* Table Specific Styling */
+        .claims-table-container {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+        .claims-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+        .claims-table th {
+            background-color: #f8f9fa;
+            padding: 15px;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 2px solid #eee;
+        }
+        .claims-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            vertical-align: middle;
+        }
+        .item-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .table-img {
+            width: 45px;
+            height: 45px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-approved { background: #d4edda; color: #155724; }
+        .status-rejected { background: #f8d7da; color: #721c24; }
+        .note-text {
+            color: #666;
+            font-size: 0.9rem;
+            max-width: 250px;
+            word-wrap: break-word;
+        }
+    </style>
 </head>
 <body>
 <div class="app-container">
@@ -93,50 +148,64 @@ $total  = count($claims);
             <button type="submit" class="status-btn active">Search</button>
         </form>
 
-        <!-- Claims Grid -->
+        <!-- Claims Table Section -->
         <?php if ($total === 0): ?>
             <div class="dashboard-empty">
                 <i class="fa-solid fa-file-circle-question"></i>
                 <p>You haven't made any claims yet.</p>
             </div>
         <?php else: ?>
-            <div class="cards-grid">
-                <?php foreach ($claims as $row): 
-                    $statusClass = 'status-' . strtolower($row['Claim_Status']);
-                    
-                    // FIXED IMAGE PATH LOGIC[cite: 3]
-                    $imgPath = !empty($row['Item_Image']) 
-                        ? '../' . htmlspecialchars($row['Item_Image']) 
-                        : '../assets/images/placeholder.png';
-                ?>
-                <div class="item-card">
-                    <div class="item-image">
-                        <img src="<?= $imgPath ?>" 
-                             alt="<?= htmlspecialchars($row['Item_Name']) ?>"
-                             style="width:100%; height:100%; object-fit:cover;"
-                             onerror="this.src='../assets/images/placeholder.png'">
-                    </div>
-                    <div class="item-card-header">
-                        <span class="item-status <?= $statusClass ?>">
-                            <?= htmlspecialchars(ucfirst($row['Claim_Status'])) ?>
-                        </span>
-                        <span class="item-category"><?= htmlspecialchars($row['Category'] ?? 'Uncategorized') ?></span>
-                    </div>
-                    <div class="item-card-body">
-                        <h3 class="item-title"><?= htmlspecialchars($row['Item_Name']) ?></h3>
-                        <?php if(!empty($row['Claim_Note'])): ?>
-                            <p class="item-meta" style="font-style: italic; color: #666;">
-                                "<?= htmlspecialchars($row['Claim_Note']) ?>"
-                            </p>
-                        <?php endif; ?>
-                    </div>
-                    <div class="item-card-footer">
-                        <span class="item-date">
-                            <i class="fa-regular fa-calendar"></i> Reported: <?= date('M d', strtotime($row['Date_filed'])) ?>
-                        </span>
-                    </div>
-                </div>
-                <?php endforeach; ?>
+            <div class="claims-table-container">
+                <table class="claims-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Category</th>
+                            <th>Claim Note</th>
+                            <th>Status</th>
+                            <th>Date Filed</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($claims as $row): 
+                            $status = strtolower($row['Claim_Status']);
+                            $statusClass = 'status-' . $status;
+                            
+                            // Image Path Logic
+                            $imgPath = !empty($row['Item_Image']) 
+                                ? '../' . htmlspecialchars($row['Item_Image']) 
+                                : '../assets/images/placeholder.png';
+                        ?>
+                        <tr>
+                            <td>
+                                <div class="item-cell">
+                                    <img src="<?= $imgPath ?>" 
+                                         alt="" 
+                                         class="table-img"
+                                         onerror="this.src='../assets/images/placeholder.png'">
+                                    <strong><?= htmlspecialchars($row['Item_Name']) ?></strong>
+                                </div>
+                            </td>
+                            <td><?= htmlspecialchars($row['Category'] ?? 'Uncategorized') ?></td>
+                            <td>
+                                <span class="note-text">
+                                    <?= !empty($row['Claim_Note']) ? '"' . htmlspecialchars($row['Claim_Note']) . '"' : '—' ?>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="status-badge <?= $statusClass ?>">
+                                    <?= htmlspecialchars(ucfirst($row['Claim_Status'])) ?>
+                                </span>
+                            </td>
+                            <td>
+                                <small style="color: #888;">
+                                    <?= date('M d, Y', strtotime($row['Date_filed'])) ?>
+                                </small>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
             </div>
         <?php endif; ?>
 
